@@ -4,8 +4,8 @@ Angular tutoring platform that connects students, tutors and teachers, with an a
 
 ## Screenshots
 ![Landing page](1_landing_page.png)
-![Student dashboard](2_student_dashboard.png)
-![Tutor profile](3_tutor_profile.png)
+![Login](2_login_page.png)
+![Register](3_register_page.png)
 
 ## Overview
 Students find tutors, view their profiles, book sessions and pay. Tutors manage their profile and availability. Teachers grade student work. Admins manage users and platform activity. Every area is protected by role-based route guards.
