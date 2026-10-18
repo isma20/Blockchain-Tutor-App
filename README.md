@@ -1,59 +1,49 @@
-# TutorApp
+# Blockchain-Integrated Tutor App
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.3.
+Angular tutoring platform that connects students, tutors and teachers, with an admin panel and MetaMask (Web3) wallet integration. Built as a full-stack web project with an Angular 21 frontend, Firebase (Auth and Firestore) and a Node.js / Express API.
 
-## Development server
+## Screenshots
+![Landing page](1_landing_page.png)
+![Student dashboard](2_student_dashboard.png)
+![Tutor profile](3_tutor_profile.png)
 
-To start a local development server, run:
+## Overview
+Students find tutors, view their profiles, book sessions and pay. Tutors manage their profile and availability. Teachers grade student work. Admins manage users and platform activity. Every area is protected by role-based route guards.
 
-```bash
-ng serve
-```
+## Features
+**Authentication and roles**
+- Register and log in with email and password (Firebase Auth)
+- Four roles: Student, Tutor, Teacher, Admin, each with its own dashboard
+- Route guards by role (`student`, `tutor`, `admin`) and an auth interceptor that attaches the user's token to API calls
+- Separate admin login and admin panel
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+**Student**
+- Find tutors and open full tutor profiles
+- Book sessions through the tutor's availability
+- Payment dialog and session history
+- Enrollments tracked with progress
 
-## Code scaffolding
+**Tutor**
+- Tutor profile and dashboard
+- Availability dialog for setting open time slots
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+**Teacher**
+- Teacher dashboard and grading screen
 
-```bash
-ng generate component component-name
-```
+**Admin**
+- Admin dashboard and panel for managing users and viewing activity
+- Firebase seeder tools to load sample data
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+**Other**
+- Landing page with contact form (messages stored in Firestore)
+- MetaMask wallet connection through Web3.js (connect wallet, read account)
 
-```bash
-ng generate --help
-```
+## Tech stack
+| Layer | Technology |
+|---|---|
+| Frontend | Angular 21, TypeScript, SCSS, Angular Material, ngx-toastr |
+| Backend services | Firebase Auth, Cloud Firestore (`@angular/fire`) |
+| API server | Node.js, Express, JWT, rate limiting, Nodemailer (`server.js`) |
+| Blockchain | Web3.js with MetaMask |
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Project structure
