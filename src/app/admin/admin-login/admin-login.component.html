@@ -1,0 +1,127 @@
+<div class="admin-login-container">
+  <div class="login-card">
+    <mat-card class="admin-login-card">
+      <mat-card-header class="login-header">
+        <mat-card-title class="login-title">
+          <mat-icon class="admin-icon">admin_panel_settings</mat-icon>
+          Admin Login
+        </mat-card-title>
+        <mat-card-subtitle>Secure Admin Access</mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+          <!-- Error Message -->
+          <div class="error-message" *ngIf="loginForm.hasError('invalid')">
+            <mat-icon class="error-icon">error</mat-icon>
+            <span>{{ getErrorMessage() }}</span>
+          </div>
+
+          <!-- Email Field -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Admin Email</mat-label>
+            <input matInput 
+                   type="email" 
+                   formControlName="email"
+                   placeholder="Enter admin email"
+                   autocomplete="email">
+            <mat-icon matSuffix>email</mat-icon>
+            <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+              Email is required
+            </mat-error>
+            <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
+              Please enter a valid email
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Password Field -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Password</mat-label>
+            <input matInput 
+                   [type]="showPassword ? 'text' : 'password'" 
+                   formControlName="password"
+                   placeholder="Enter admin password"
+                   autocomplete="current-password">
+            <button mat-icon-button 
+                    matSuffix 
+                    (click)="togglePasswordVisibility()"
+                    type="button"
+                    matTooltip="{{ showPassword ? 'Hide password' : 'Show password' }}">
+              <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+              Password is required
+            </mat-error>
+            <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
+              Password must be at least 6 characters
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Submit Button -->
+          <button mat-raised-button 
+                  type="submit" 
+                  color="primary"
+                  class="login-button"
+                  [disabled]="loginForm.invalid || loading">
+            <mat-icon *ngIf="!loading">login</mat-icon>
+            <mat-progress-spinner *ngIf="loading" 
+                                 mode="indeterminate" 
+                                 diameter="20"
+                                 class="button-spinner">
+            </mat-progress-spinner>
+            <span class="button-text">{{ loading ? 'Authenticating...' : 'Login' }}</span>
+          </button>
+        </form>
+
+        <!-- Credentials Section -->
+        <div class="credentials-section">
+          <mat-expansion-panel class="credentials-panel">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon class="credentials-icon">vpn_key</mat-icon>
+                Admin Credentials (Click to reveal)
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            
+            <div class="credentials-content">
+              <div class="credential-item">
+                <strong>Email:</strong> 
+                <code>{{ getCredentials().email }}</code>
+                <button mat-icon-button 
+                        matSuffix 
+                        (click)="copyToClipboard(getCredentials().email)"
+                        matTooltip="Copy email">
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+              </div>
+              <div class="credential-item">
+                <strong>Password:</strong> 
+                <code>{{ hideCredentials ? '••••••••' : getCredentials().password }}</code>
+                <button mat-icon-button 
+                        matSuffix 
+                        (click)="toggleCredentialsVisibility()"
+                        matTooltip="{{ hideCredentials ? 'Show password' : 'Hide password' }}">
+                  <mat-icon>{{ hideCredentials ? 'visibility' : 'visibility_off' }}</mat-icon>
+                </button>
+                <button mat-icon-button 
+                        matSuffix 
+                        (click)="copyToClipboard(getCredentials().password)"
+                        matTooltip="Copy password">
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+              </div>
+              
+              <mat-card class="security-note">
+                <mat-card-content>
+                  <mat-icon class="warning-icon">warning</mat-icon>
+                  <p><strong>Security Note:</strong> These are default admin credentials. 
+                  In production, change these immediately and use environment variables.</p>
+                </mat-card-content>
+              </mat-card>
+            </div>
+          </mat-expansion-panel>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

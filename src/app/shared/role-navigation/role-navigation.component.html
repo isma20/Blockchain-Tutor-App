@@ -1,0 +1,67 @@
+<mat-toolbar color="primary" class="role-navigation" *ngIf="user">
+  <button mat-icon-button (click)="router.navigate(['/landing'])" matTooltip="Home">
+    <mat-icon>home</mat-icon>
+  </button>
+
+  <span class="spacer"></span>
+
+  <!-- Role-based Navigation -->
+  <nav class="nav-items">
+    <button mat-button 
+            *ngFor="let item of getFilteredNavigationItems()" 
+            [routerLink]="item.route"
+            routerLinkActive="active"
+            matTooltip="{{ item.label }}">
+      <mat-icon>{{ item.icon }}</mat-icon>
+      <span class="nav-label">{{ item.label }}</span>
+    </button>
+  </nav>
+
+  <span class="spacer"></span>
+
+  <!-- User Menu -->
+  <div class="user-info">
+    <span class="user-role">
+      <mat-icon>{{ getRoleIcon() }}</mat-icon>
+      {{ getRoleLabel() }}
+    </span>
+    
+    <button mat-icon-button [matMenuTriggerFor]="userMenu" matTooltip="User Menu">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item disabled>
+        <mat-icon>person</mat-icon>
+        <span>{{ user.name }}</span>
+      </button>
+      <button mat-menu-item disabled>
+        <mat-icon>email</mat-icon>
+        <span>{{ user.email }}</span>
+      </button>
+      <mat-divider></mat-divider>
+      
+      <button mat-menu-item (click)="navigateToDashboard()">
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+      </button>
+      
+      <button mat-menu-item (click)="navigateToProfile()">
+        <mat-icon>person</mat-icon>
+        <span>Profile</span>
+      </button>
+      
+      <button mat-menu-item (click)="navigateToSettings()">
+        <mat-icon>settings</mat-icon>
+        <span>Settings</span>
+      </button>
+      
+      <mat-divider></mat-divider>
+      
+      <button mat-menu-item (click)="logout()" class="logout-item">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
+  </div>
+</mat-toolbar>

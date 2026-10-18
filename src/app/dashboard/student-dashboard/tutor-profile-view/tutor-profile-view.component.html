@@ -1,0 +1,201 @@
+<div class="profile-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    <p>Loading tutor profile...</p>
+  </div>
+
+  <!-- Profile Content -->
+  <div *ngIf="!isLoading && tutor" class="profile-content">
+    <!-- Header Section -->
+    <div class="profile-header">
+      <button mat-button class="back-button" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+        Back to Tutors
+      </button>
+      
+      <div class="tutor-header-info">
+        <div class="tutor-avatar">
+          <mat-icon>person</mat-icon>
+        </div>
+        <div class="tutor-basic-info">
+          <h1>{{ tutor.name }}</h1>
+          <div class="rating-display">
+            <span class="stars">{{ getRatingStars(tutor.rating) }}</span>
+            <span class="rating-text">{{ tutor.rating }}/5.0</span>
+            <span class="review-count">({{ tutor.totalSessions }} sessions)</span>
+          </div>
+          <div class="tutor-stats">
+            <span class="stat">
+              <mat-icon>people</mat-icon>
+              {{ tutor.totalStudents }} students
+            </span>
+            <span class="stat">
+              <mat-icon>schedule</mat-icon>
+              {{ tutor.totalSessions }} sessions
+            </span>
+            <span class="stat">
+              <mat-icon>attach_money</mat-icon>
+              ${{ tutor.hourlyRate }}/hour
+            </span>
+          </div>
+        </div>
+        <div class="tutor-actions">
+          <button mat-raised-button color="accent" class="book-button" (click)="bookTutor()">
+            <mat-icon>payment</mat-icon>
+            Book Session
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="profile-grid">
+      <!-- Left Column -->
+      <div class="left-column">
+        <!-- About Section -->
+        <mat-card class="profile-section">
+          <mat-card-header>
+            <mat-card-title>About</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p class="bio-text">{{ tutor.bio }}</p>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Specialties Section -->
+        <mat-card class="profile-section">
+          <mat-card-header>
+            <mat-card-title>Specialties</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-chip-listbox>
+              <mat-chip-option *ngFor="let specialty of tutor.specialties" color="primary">
+                {{ specialty }}
+              </mat-chip-option>
+            </mat-chip-listbox>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Skills Section -->
+        <mat-card class="profile-section">
+          <mat-card-header>
+            <mat-card-title>Skills</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-chip-listbox>
+              <mat-chip-option *ngFor="let skill of tutor.skills" color="accent">
+                {{ skill }}
+              </mat-chip-option>
+            </mat-chip-listbox>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Languages Section -->
+        <mat-card class="profile-section">
+          <mat-card-header>
+            <mat-card-title>Languages</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="languages-list">
+              <span *ngFor="let language of tutor.languages" class="language-item">
+                <mat-icon>language</mat-icon>
+                {{ language }}
+              </span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Right Column -->
+      <div class="right-column">
+        <!-- Experience & Education -->
+        <mat-card class="profile-section">
+          <mat-card-header>
+            <mat-card-title>Experience & Education</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="info-section">
+              <h4>Experience</h4>
+              <p>{{ tutor.experience }}</p>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="info-section">
+              <h4>Education</h4>
+              <p>{{ tutor.education }}</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Availability Section -->
+        <mat-card class="profile-section">
+          <mat-card-header>
+            <mat-card-title>Availability</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="availability-list">
+              <div *ngFor="let availability of tutor.availability" class="availability-item">
+                <mat-icon>schedule</mat-icon>
+                {{ availability }}
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Certifications Section -->
+        <mat-card class="profile-section">
+          <mat-card-header>
+            <mat-card-title>Certifications</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="certifications-list">
+              <div *ngFor="let cert of tutor.certifications" class="certification-item">
+                <mat-icon>verified</mat-icon>
+                {{ cert }}
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Reviews Section -->
+        <mat-card class="profile-section" *ngIf="tutor.reviews && tutor.reviews.length > 0">
+          <mat-card-header>
+            <mat-card-title>Student Reviews</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="reviews-list">
+              <div *ngFor="let review of tutor.reviews" class="review-item">
+                <div class="review-header">
+                  <span class="reviewer-name">{{ review.studentName }}</span>
+                  <span class="review-rating">{{ getRatingStars(review.rating) }}</span>
+                  <span class="review-date">{{ review.date | date:'mediumDate' }}</span>
+                </div>
+                <p class="review-comment">{{ review.comment }}</p>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+    <!-- Sticky Book Button -->
+    <div class="sticky-book-section">
+      <mat-card class="book-card">
+        <div class="book-info">
+          <div class="price-info">
+            <span class="price-label">Hourly Rate</span>
+            <span class="price-amount">${{ tutor.hourlyRate }}/hour</span>
+          </div>
+          <div class="rating-info">
+            <span>{{ getRatingStars(tutor.rating) }}</span>
+            <span>{{ tutor.rating }}/5.0</span>
+          </div>
+        </div>
+        <button mat-raised-button color="accent" class="book-button-large" (click)="bookTutor()">
+          <mat-icon>payment</mat-icon>
+          Book Session
+        </button>
+      </mat-card>
+    </div>
+  </div>
+</div>

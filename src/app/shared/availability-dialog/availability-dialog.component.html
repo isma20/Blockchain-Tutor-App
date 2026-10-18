@@ -1,0 +1,62 @@
+<div class="availability-dialog">
+  <h2 mat-dialog-title>{{ data.title }}</h2>
+  
+  <mat-dialog-content>
+    <div class="availability-form">
+      <form [formGroup]="availabilityForm" class="form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Day of Week</mat-label>
+          <mat-select formControlName="dayOfWeek">
+            <mat-option *ngFor="let day of daysOfWeek" [value]="day">{{ day }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Start Time</mat-label>
+          <input matInput formControlName="startTime" placeholder="9:00 AM">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>End Time</mat-label>
+          <input matInput formControlName="endTime" placeholder="5:00 PM">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status">
+            <mat-option value="available">Available</mat-option>
+            <mat-option value="busy">Busy</mat-option>
+            <mat-option value="unavailable">Unavailable</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="button" (click)="addAvailabilitySlot()" 
+                [disabled]="!availabilityForm.valid">
+          <mat-icon>add</mat-icon>
+          Add Slot
+        </button>
+      </form>
+    </div>
+
+    <div class="availability-slots" *ngIf="availabilitySlots.length > 0">
+      <h3>Current Availability</h3>
+      <div class="slots-list">
+        <div *ngFor="let slot of availabilitySlots" class="slot-item">
+          <div class="slot-info">
+            <span class="slot-day">{{ slot.dayOfWeek }}</span>
+            <span class="slot-time">{{ slot.startTime }} - {{ slot.endTime }}</span>
+            <span class="slot-status" [class]="slot.status">{{ slot.status }}</span>
+          </div>
+          <button mat-icon-button color="warn" (click)="removeSlot(slot)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+  </mat-dialog-actions>
+</div>

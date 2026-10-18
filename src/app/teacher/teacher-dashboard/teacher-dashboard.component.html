@@ -1,0 +1,601 @@
+<div class="teacher-dashboard">
+  <!-- Header -->
+  <mat-toolbar color="primary" class="dashboard-header">
+    <mat-icon class="header-icon">school</mat-icon>
+    <span class="header-title">Teacher Dashboard</span>
+    
+    <span class="spacer"></span>
+    
+    <button mat-icon-button (click)="refreshData()" matTooltip="Refresh Data">
+      <mat-icon>refresh</mat-icon>
+    </button>
+    
+    <button mat-icon-button [matMenuTriggerFor]="userMenu">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item (click)="navigateToProfile()">
+        <mat-icon>person</mat-icon>
+        <span>My Profile</span>
+      </button>
+      <button mat-menu-item (click)="exportStudentData()">
+        <mat-icon>download</mat-icon>
+        <span>Export Data</span>
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
+  </mat-toolbar>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    <p>Loading teacher data...</p>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!loading" class="dashboard-content">
+    <!-- Profile Card -->
+    <mat-card class="profile-card" *ngIf="tutorProfile">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon class="profile-icon">psychology</mat-icon>
+          {{ tutorProfile.name }}
+        </mat-card-title>
+        <mat-card-subtitle>{{ tutorProfile.email }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="profile-stats">
+          <div class="stat-item">
+            <mat-icon>star</mat-icon>
+            <div class="stat-content">
+              <div class="stat-value">{{ tutorProfile.rating }}</div>
+              <div class="stat-label">Rating</div>
+            </div>
+          </div>
+          <div class="stat-item">
+            <mat-icon>people</mat-icon>
+            <div class="stat-content">
+              <div class="stat-value">{{ tutorProfile.totalStudents }}</div>
+              <div class="stat-label">Students</div>
+            </div>
+          </div>
+          <div class="stat-item">
+            <mat-icon>video_call</mat-icon>
+            <div class="stat-content">
+              <div class="stat-value">{{ tutorProfile.totalSessions }}</div>
+              <div class="stat-label">Sessions</div>
+            </div>
+          </div>
+          <div class="stat-item">
+            <mat-icon>attach_money</mat-icon>
+            <div class="stat-content">
+              <div class="stat-value">${{ tutorProfile.totalEarnings }}</div>
+              <div class="stat-label">Earnings</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="specialties">
+          <h4>Specialties:</h4>
+          <mat-chip-listbox>
+            <mat-chip-option *ngFor="let specialty of tutorProfile.specialties" color="primary">
+              {{ specialty }}
+            </mat-chip-option>
+          </mat-chip-listbox>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Quick Stats -->
+    <div class="quick-stats">
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="quick-stat">
+            <mat-icon class="stat-icon">group</mat-icon>
+            <div class="stat-info">
+              <div class="stat-number">{{ activeStudentsCount }}</div>
+              <div class="stat-text">Active Students</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="quick-stat">
+            <mat-icon class="stat-icon">event</mat-icon>
+            <div class="stat-info">
+              <div class="stat-number">{{ scheduledSessionsCount }}</div>
+              <div class="stat-text">Upcoming Sessions</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="quick-stat">
+            <mat-icon class="stat-icon">trending_up</mat-icon>
+            <div class="stat-info">
+              <div class="stat-number">{{ averageProgress }}%</div>
+              <div class="stat-text">Avg Progress</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Tabs -->
+    <mat-tab-group class="dashboard-tabs" dynamicHeight>
+      <!-- Students Tab -->
+      <mat-tab label="Students">
+        <div class="tab-content">
+          <div class="tab-header">
+            <h3>Student Management</h3>
+            <button mat-raised-button color="primary" (click)="studentForm.reset()">
+              <mat-icon>person_add</mat-icon>
+              Add Student
+            </button>
+          </div>
+
+          <!-- Add Student Form -->
+          <mat-card class="form-card" *ngIf="studentForm.dirty">
+            <mat-card-header>
+              <mat-card-title>Add New Student</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <form [formGroup]="studentForm" (ngSubmit)="addStudent()">
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Student Name</mat-label>
+                    <input matInput formControlName="name" placeholder="Enter student name">
+                    <mat-error *ngIf="studentForm.get('name')?.hasError('required')">
+                      Name is required
+                    </mat-error>
+                  </mat-form-field>
+                  
+                  <mat-form-field appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <input matInput formControlName="email" placeholder="Enter email address">
+                    <mat-error *ngIf="studentForm.get('email')?.hasError('required')">
+                      Email is required
+                    </mat-error>
+                    <mat-error *ngIf="studentForm.get('email')?.hasError('email')">
+                      Please enter a valid email
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Subjects</mat-label>
+                  <mat-select formControlName="subjects" multiple>
+                    <mat-option value="Mathematics">Mathematics</mat-option>
+                    <mat-option value="Physics">Physics</mat-option>
+                    <mat-option value="Chemistry">Chemistry</mat-option>
+                    <mat-option value="Biology">Biology</mat-option>
+                    <mat-option value="English">English</mat-option>
+                    <mat-option value="Computer Science">Computer Science</mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="studentForm.get('subjects')?.hasError('required')">
+                      At least one subject is required
+                    </mat-error>
+                </mat-form-field>
+                
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Notes</mat-label>
+                  <textarea matInput formControlName="notes" rows="3" placeholder="Additional notes about the student"></textarea>
+                </mat-form-field>
+                
+                <div class="form-actions">
+                  <button mat-raised-button color="primary" type="submit" [disabled]="!studentForm.valid">
+                    <mat-icon>add</mat-icon>
+                    Add Student
+                  </button>
+                  <button mat-button type="button" (click)="studentForm.reset()">
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Students Table -->
+          <mat-card>
+            <mat-card-content>
+              <table mat-table [dataSource]="students" class="students-table">
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef>Name</th>
+                  <td mat-cell *matCellDef="let student">{{ student.name }}</td>
+                </ng-container>
+
+                <!-- Email Column -->
+                <ng-container matColumnDef="email">
+                  <th mat-header-cell *matHeaderCellDef>Email</th>
+                  <td mat-cell *matCellDef="let student">{{ student.email }}</td>
+                </ng-container>
+
+                <!-- Status Column -->
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef>Status</th>
+                  <td mat-cell *matCellDef="let student">
+                    <mat-chip-listbox>
+                      <mat-chip-option [color]="getStatusColor(student.status)">
+                        {{ student.status }}
+                      </mat-chip-option>
+                    </mat-chip-listbox>
+                  </td>
+                </ng-container>
+
+                <!-- Progress Column -->
+                <ng-container matColumnDef="progress">
+                  <th mat-header-cell *matHeaderCellDef>Progress</th>
+                  <td mat-cell *matCellDef="let student">
+                    <mat-progress-bar mode="determinate" [value]="student.progress"></mat-progress-bar>
+                    <span class="progress-text">{{ student.progress }}%</span>
+                  </td>
+                </ng-container>
+
+                <!-- Sessions Column -->
+                <ng-container matColumnDef="sessions">
+                  <th mat-header-cell *matHeaderCellDef>Sessions</th>
+                  <td mat-cell *matCellDef="let student">{{ student.sessionsCompleted }}</td>
+                </ng-container>
+
+                <!-- Actions Column -->
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>Actions</th>
+                  <td mat-cell *matCellDef="let student">
+                    <button mat-icon-button (click)="viewStudentDetails(student)" matTooltip="View Details">
+                      <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button mat-icon-button 
+                            (click)="suspendStudent(student)" 
+                            [disabled]="student.status === 'suspended'"
+                            matTooltip="Suspend"
+                            color="warn">
+                      <mat-icon>block</mat-icon>
+                    </button>
+                    <button mat-icon-button 
+                            (click)="activateStudent(student)" 
+                            [disabled]="student.status === 'active'"
+                            matTooltip="Activate"
+                            color="primary">
+                      <mat-icon>check_circle</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="deleteStudent(student.id)" matTooltip="Remove" color="warn">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="studentColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: studentColumns;"></tr>
+              </table>
+
+              <div *ngIf="students.length === 0" class="no-data">
+                <mat-icon>group</mat-icon>
+                <p>No students found</p>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+      <!-- Sessions Tab -->
+      <mat-tab label="Sessions">
+        <div class="tab-content">
+          <div class="tab-header">
+            <h3>Session Management</h3>
+            <button mat-raised-button color="primary" (click)="sessionForm.reset()">
+              <mat-icon>event</mat-icon>
+              Schedule Session
+            </button>
+          </div>
+
+          <!-- Schedule Session Form -->
+          <mat-card class="form-card" *ngIf="sessionForm.dirty">
+            <mat-card-header>
+              <mat-card-title>Schedule New Session</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <form [formGroup]="sessionForm" (ngSubmit)="scheduleSession()">
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Student</mat-label>
+                    <mat-select formControlName="studentId">
+                      <mat-option *ngFor="let student of students" [value]="student.id">
+                        {{ student.name }} ({{ student.email }})
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="sessionForm.get('studentId')?.hasError('required')">
+                      Student selection is required
+                    </mat-error>
+                  </mat-form-field>
+                  
+                  <mat-form-field appearance="outline">
+                    <mat-label>Subject</mat-label>
+                    <mat-select formControlName="subject">
+                      <mat-option value="Mathematics">Mathematics</mat-option>
+                      <mat-option value="Physics">Physics</mat-option>
+                      <mat-option value="Chemistry">Chemistry</mat-option>
+                      <mat-option value="Biology">Biology</mat-option>
+                      <mat-option value="English">English</mat-option>
+                      <mat-option value="Computer Science">Computer Science</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="sessionForm.get('subject')?.hasError('required')">
+                      Subject is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Scheduled Time</mat-label>
+                    <input matInput 
+                           type="datetime-local" 
+                           formControlName="scheduledTime">
+                    <mat-error *ngIf="sessionForm.get('scheduledTime')?.hasError('required')">
+                      Scheduled time is required
+                    </mat-error>
+                  </mat-form-field>
+                  
+                  <mat-form-field appearance="outline">
+                    <mat-label>Duration (minutes)</mat-label>
+                    <input matInput 
+                           type="number" 
+                           formControlName="duration"
+                           min="30"
+                           max="180">
+                    <mat-error *ngIf="sessionForm.get('duration')?.hasError('required')">
+                      Duration is required
+                    </mat-error>
+                    <mat-error *ngIf="sessionForm.get('duration')?.hasError('min')">
+                      Minimum duration is 30 minutes
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Notes</mat-label>
+                  <textarea matInput formControlName="notes" rows="3" placeholder="Session notes or agenda"></textarea>
+                </mat-form-field>
+                
+                <div class="form-actions">
+                  <button mat-raised-button color="primary" type="submit" [disabled]="!sessionForm.valid">
+                    <mat-icon>schedule</mat-icon>
+                    Schedule Session
+                  </button>
+                  <button mat-button type="button" (click)="sessionForm.reset()">
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Sessions Table -->
+          <mat-card>
+            <mat-card-content>
+              <table mat-table [dataSource]="sessions" class="sessions-table">
+                <!-- Student Name Column -->
+                <ng-container matColumnDef="studentName">
+                  <th mat-header-cell *matHeaderCellDef>Student</th>
+                  <td mat-cell *matCellDef="let session">{{ session.studentName }}</td>
+                </ng-container>
+
+                <!-- Subject Column -->
+                <ng-container matColumnDef="subject">
+                  <th mat-header-cell *matHeaderCellDef>Subject</th>
+                  <td mat-cell *matCellDef="let session">{{ session.subject }}</td>
+                </ng-container>
+
+                <!-- Scheduled Time Column -->
+                <ng-container matColumnDef="scheduledTime">
+                  <th mat-header-cell *matHeaderCellDef>Scheduled</th>
+                  <td mat-cell *matCellDef="let session">{{ formatDateTime(session.scheduledTime) }}</td>
+                </ng-container>
+
+                <!-- Duration Column -->
+                <ng-container matColumnDef="duration">
+                  <th mat-header-cell *matHeaderCellDef>Duration</th>
+                  <td mat-cell *matCellDef="let session">{{ session.duration }} min</td>
+                </ng-container>
+
+                <!-- Status Column -->
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef>Status</th>
+                  <td mat-cell *matCellDef="let session">
+                    <mat-chip-listbox>
+                      <mat-chip-option [color]="getStatusColor(session.status)">
+                        {{ session.status }}
+                      </mat-chip-option>
+                    </mat-chip-listbox>
+                  </td>
+                </ng-container>
+
+                <!-- Actions Column -->
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>Actions</th>
+                  <td mat-cell *matCellDef="let session">
+                    <button mat-icon-button 
+                            (click)="completeSession(session)" 
+                            [disabled]="session.status === 'completed'"
+                            matTooltip="Mark Complete"
+                            color="primary">
+                      <mat-icon>check_circle</mat-icon>
+                    </button>
+                    <button mat-icon-button 
+                            (click)="cancelSession(session)" 
+                            [disabled]="session.status === 'cancelled'"
+                            matTooltip="Cancel"
+                            color="warn">
+                      <mat-icon>cancel</mat-icon>
+                    </button>
+                    <button mat-icon-button 
+                            *ngIf="session.recordingUrl"
+                            (click)="openUrl(session.recordingUrl)" 
+                            matTooltip="View Recording">
+                      <mat-icon>play_circle</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="sessionColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: sessionColumns;"></tr>
+              </table>
+
+              <div *ngIf="sessions.length === 0" class="no-data">
+                <mat-icon>video_call</mat-icon>
+                <p>No sessions scheduled</p>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+      <!-- Profile Tab -->
+      <mat-tab label="Profile">
+        <div class="tab-content">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Teacher Profile</mat-card-title>
+              <mat-card-subtitle>Update your teaching information</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Specialties</mat-label>
+                  <mat-select formControlName="specialties" multiple>
+                    <mat-option value="Mathematics">Mathematics</mat-option>
+                    <mat-option value="Physics">Physics</mat-option>
+                    <mat-option value="Chemistry">Chemistry</mat-option>
+                    <mat-option value="Biology">Biology</mat-option>
+                    <mat-option value="English">English</mat-option>
+                    <mat-option value="Computer Science">Computer Science</mat-option>
+                    <mat-option value="History">History</mat-option>
+                    <mat-option value="Geography">Geography</mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="profileForm.get('specialties')?.hasError('required')">
+                    At least one specialty is required
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Experience</mat-label>
+                  <input matInput formControlName="experience" placeholder="e.g., 5 years of teaching experience">
+                  <mat-error *ngIf="profileForm.get('experience')?.hasError('required')">
+                    Experience is required
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Hourly Rate ($)</mat-label>
+                  <input matInput 
+                         type="number" 
+                         formControlName="hourlyRate"
+                         min="0"
+                         placeholder="50">
+                  <mat-error *ngIf="profileForm.get('hourlyRate')?.hasError('required')">
+                    Hourly rate is required
+                  </mat-error>
+                  <mat-error *ngIf="profileForm.get('hourlyRate')?.hasError('min')">
+                    Rate must be positive
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Bio</mat-label>
+                  <textarea matInput 
+                            formControlName="bio" 
+                            rows="4" 
+                            placeholder="Tell students about your teaching style and expertise..."></textarea>
+                  <mat-error *ngIf="profileForm.get('bio')?.hasError('required')">
+                    Bio is required
+                  </mat-error>
+                </mat-form-field>
+
+                <!-- Availability -->
+                <div class="availability-section">
+                  <h4>Availability</h4>
+                  <div formGroupName="availability" class="availability-grid">
+                    <mat-slide-toggle formControlName="monday">Monday</mat-slide-toggle>
+                    <mat-slide-toggle formControlName="tuesday">Tuesday</mat-slide-toggle>
+                    <mat-slide-toggle formControlName="wednesday">Wednesday</mat-slide-toggle>
+                    <mat-slide-toggle formControlName="thursday">Thursday</mat-slide-toggle>
+                    <mat-slide-toggle formControlName="friday">Friday</mat-slide-toggle>
+                    <mat-slide-toggle formControlName="saturday">Saturday</mat-slide-toggle>
+                    <mat-slide-toggle formControlName="sunday">Sunday</mat-slide-toggle>
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button mat-raised-button color="primary" type="submit" [disabled]="!profileForm.valid">
+                    <mat-icon>save</mat-icon>
+                    Update Profile
+                  </button>
+                </div>
+              </form>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+
+    <!-- Student Details Dialog -->
+    <mat-card *ngIf="selectedStudent" class="student-details">
+      <mat-card-header>
+        <mat-card-title>Student Details: {{ selectedStudent.name }}</mat-card-title>
+        <button mat-icon-button (click)="selectedStudent = null">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="student-info">
+          <div class="info-row">
+            <strong>Email:</strong> {{ selectedStudent.email }}
+          </div>
+          <div class="info-row">
+            <strong>Status:</strong> 
+            <mat-chip-listbox>
+              <mat-chip-option [color]="getStatusColor(selectedStudent.status)">
+                {{ selectedStudent.status }}
+              </mat-chip-option>
+            </mat-chip-listbox>
+          </div>
+          <div class="info-row">
+            <strong>Enrolled:</strong> {{ formatDate(selectedStudent.enrolledDate) }}
+          </div>
+          <div class="info-row">
+            <strong>Progress:</strong> 
+            <mat-progress-bar mode="determinate" [value]="selectedStudent.progress"></mat-progress-bar>
+            <span>{{ selectedStudent.progress }}%</span>
+          </div>
+          <div class="info-row">
+            <strong>Sessions Completed:</strong> {{ selectedStudent.sessionsCompleted }}
+          </div>
+          <div class="info-row">
+            <strong>Subjects:</strong> 
+            <mat-chip-listbox>
+              <mat-chip-option *ngFor="let subject of selectedStudent.subjects" color="primary">
+                {{ subject }}
+              </mat-chip-option>
+            </mat-chip-listbox>
+          </div>
+          <div class="info-row" *ngIf="selectedStudent.notes">
+            <strong>Notes:</strong> {{ selectedStudent.notes }}
+          </div>
+          <div class="info-row" *ngIf="selectedStudent.rating">
+            <strong>Rating:</strong> 
+            <mat-icon>star</mat-icon> {{ selectedStudent.rating }}/5
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

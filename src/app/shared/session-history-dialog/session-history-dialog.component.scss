@@ -1,0 +1,95 @@
+.session-history-dialog {
+  min-width: 800px;
+}
+
+.sessions-table {
+  margin-top: 1rem;
+}
+
+.session-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.student-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.student-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.subject {
+  color: #667eea;
+  font-weight: 500;
+}
+
+.date, .time {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.duration {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.status {
+  font-size: 0.8rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.status.completed {
+  background: #4caf50;
+  color: white;
+}
+
+.status.pending {
+  background: #ff9800;
+  color: white;
+}
+
+.status.confirmed {
+  background: #2196f3;
+  color: white;
+}
+
+.status.cancelled {
+  background: #f44336;
+  color: white;
+}
+
+.earnings {
+  font-weight: 600;
+  color: #4caf50;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .session-history-dialog {
+    min-width: auto;
+    width: 95vw;
+  }
+  
+  .session-table {
+    font-size: 0.8rem;
+  }
+  
+  .student-name {
+    font-size: 0.9rem;
+  }
+  
+  .subject {
+    font-size: 0.85rem;
+  }
+  
+  .date, .time, .duration {
+    font-size: 0.8rem;
+  }
+}

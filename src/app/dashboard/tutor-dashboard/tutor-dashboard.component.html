@@ -1,0 +1,238 @@
+<div class="tutor-dashboard">
+  <!-- Top Navigation -->
+  <mat-toolbar class="dashboard-toolbar" color="primary">
+    <div class="toolbar-content">
+      <div class="toolbar-left">
+        <mat-icon class="toolbar-icon">school</mat-icon>
+        <span class="toolbar-title">TutorApp</span>
+      </div>
+      
+      <div class="toolbar-center">
+        <span class="welcome-text">Welcome back, {{ user?.name }}! 🎓</span>
+      </div>
+      
+      <div class="toolbar-right">
+        <button mat-icon-button (click)="viewCalendar()">
+          <mat-icon>calendar_today</mat-icon>
+        </button>
+        <button mat-icon-button (click)="editProfile()">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button [matMenuTriggerFor]="userMenu">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <a mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </a>
+        </mat-menu>
+      </div>
+    </div>
+  </mat-toolbar>
+
+  <!-- Main Dashboard Content -->
+  <div class="dashboard-content">
+    <!-- Stats Overview -->
+    <div class="stats-grid">
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-icon students">
+              <mat-icon>people</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3 class="stat-number">{{ totalStudents }}</h3>
+              <p class="stat-label">Total Students</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-icon sessions">
+              <mat-icon>video_call</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3 class="stat-number">{{ totalSessions }}</h3>
+              <p class="stat-label">Total Sessions</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-icon earnings">
+              <mat-icon>attach_money</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3 class="stat-number">${{ totalEarnings.toLocaleString() }}</h3>
+              <p class="stat-label">Total Earnings</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-icon rating">
+              <mat-icon>star</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3 class="stat-number">{{ averageRating }}</h3>
+              <p class="stat-label">Average Rating</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="dashboard-grid">
+      <!-- Upcoming Sessions -->
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon class="card-icon">event</mat-icon>
+            Upcoming Sessions
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-list class="session-list">
+            <mat-list-item *ngFor="let session of upcomingSessions" class="session-item">
+              <div matListItemTitle class="session-title">{{ session.subject }}</div>
+              <div matListItemLine class="session-details">
+                <span class="student-name">with {{ session.student }}</span>
+                <span class="session-time">{{ session.date }} at {{ session.time }}</span>
+                <span class="session-duration">{{ session.duration }}</span>
+                <mat-chip [color]="session.status === 'confirmed' ? 'primary' : 'warn'">
+                  {{ session.status }}
+                </mat-chip>
+              </div>
+              <button mat-raised-button 
+                      color="primary" 
+                      (click)="startSession(session)" 
+                      class="start-btn"
+                      [disabled]="session.status !== 'confirmed'">
+                <mat-icon>video_call</mat-icon>
+                Start Session
+              </button>
+            </mat-list-item>
+          </mat-list>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Recent Students -->
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon class="card-icon">groups</mat-icon>
+            Recent Students
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="students-list">
+            <div *ngFor="let student of recentStudents" class="student-item">
+              <div class="student-info">
+                <h4 class="student-name">{{ student.name }}</h4>
+                <p class="student-subject">{{ student.subject }}</p>
+                <div class="student-progress">
+                  <mat-progress-bar mode="determinate" [value]="student.progress"></mat-progress-bar>
+                  <span class="progress-text">{{ student.progress }}%</span>
+                </div>
+                <div class="student-meta">
+                  <span class="last-session">Last session: {{ student.lastSession }}</span>
+                  <div class="student-rating">
+                    <mat-icon class="star">star</mat-icon>
+                    <span>{{ student.rating }}/5</span>
+                  </div>
+                </div>
+              </div>
+              <button mat-stroked-button 
+                      color="primary" 
+                      (click)="viewStudentProfile(student)"
+                      class="view-profile-btn">
+                View Profile
+              </button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Earnings Overview -->
+      <mat-card class="dashboard-card earnings-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon class="card-icon">trending_up</mat-icon>
+            Earnings Overview
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <table mat-table [dataSource]="earningsData" class="earnings-table">
+            <ng-container matColumnDef="month">
+              <th mat-header-cell *matHeaderCellDef>Month</th>
+              <td mat-cell *matCellDef="let row">{{ row.month }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="amount">
+              <th mat-header-cell *matHeaderCellDef>Earnings</th>
+              <td mat-cell *matCellDef="let row">${{ row.amount }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="sessions">
+              <th mat-header-cell *matHeaderCellDef>Sessions</th>
+              <td mat-cell *matCellDef="let row">{{ getSessionsFromEarnings(row.amount) }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="students">
+              <th mat-header-cell *matHeaderCellDef>Students</th>
+              <td mat-cell *matCellDef="let row">{{ getRandomStudents() }}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Quick Actions -->
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon class="card-icon">bolt</mat-icon>
+            Quick Actions
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="quick-actions">
+            <button mat-raised-button color="primary" class="action-btn" (click)="setAvailability()">
+              <mat-icon>schedule</mat-icon>
+              Set Availability
+            </button>
+            <button mat-stroked-button color="primary" class="action-btn" (click)="viewSessionHistory()">
+              <mat-icon>history</mat-icon>
+              Session History
+            </button>
+            <button mat-stroked-button color="primary" class="action-btn" (click)="viewPaymentHistory()">
+              <mat-icon>payments</mat-icon>
+              Payment History
+            </button>
+            <button mat-stroked-button color="primary" class="action-btn" (click)="viewReviewsAndRatings()">
+              <mat-icon>rate_review</mat-icon>
+              Reviews & Ratings
+            </button>
+            <button mat-stroked-button color="accent" class="action-btn" (click)="gradeStudent()">
+              <mat-icon>grade</mat-icon>
+              Grade Students
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

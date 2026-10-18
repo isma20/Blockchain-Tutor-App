@@ -1,0 +1,78 @@
+<div class="register-container">
+  <mat-card class="register-card">
+    <mat-card-header>
+      <div class="header-actions">
+        <button mat-icon-button routerLink="/landing" class="home-btn">
+          <mat-icon>home</mat-icon>
+        </button>
+      </div>
+      <mat-card-title class="text-center">
+        <h2>Create Your Account</h2>
+      </mat-card-title>
+      <mat-card-subtitle class="text-center">
+        Join TutorConnect Pro and start your learning journey
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <form (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Full Name</mat-label>
+          <input matInput [(ngModel)]="name" name="name" required>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput [(ngModel)]="email" name="email" type="email" required>
+          <mat-icon matSuffix>email</mat-icon>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput 
+                 [(ngModel)]="password" 
+                 name="password" 
+                 [type]="showPassword ? 'text' : 'password'" 
+                 required>
+          <button mat-icon-button type="button" (click)="togglePassword('password')">
+            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Confirm Password</mat-label>
+          <input matInput 
+                 [(ngModel)]="confirmPassword" 
+                 name="confirmPassword" 
+                 [type]="showConfirmPassword ? 'text' : 'password'" 
+                 required>
+          <button mat-icon-button type="button" (click)="togglePassword('confirmPassword')">
+            <mat-icon>{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>I am a</mat-label>
+          <mat-select [(ngModel)]="role" name="role">
+            <mat-option value="student">Student</mat-option>
+            <mat-option value="tutor">Tutor</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button mat-raised-button 
+                  color="primary" 
+                  type="submit" 
+                  class="full-width"
+                  [disabled]="isSubmitting || !email || !password || !confirmPassword || !name">
+            <span *ngIf="!isSubmitting">Create Account</span>
+            <mat-spinner *ngIf="isSubmitting" diameter="20"></mat-spinner>
+          </button>
+        </div>
+      </form>
+      
+      <div class="login-link">
+        <p>Already have an account? <a routerLink="/login">Sign in here</a></p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

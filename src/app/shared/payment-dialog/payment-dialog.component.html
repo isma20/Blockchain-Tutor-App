@@ -1,0 +1,56 @@
+<div class="payment-dialog">
+  <h2 mat-dialog-title>Book Session with {{ injectedData.tutor.name }}</h2>
+  
+  <mat-dialog-content>
+    <div class="tutor-info">
+      <p><strong>Hourly Rate:</strong> ${{ injectedData.hourlyRate }}/hour</p>
+      <p><strong>Student:</strong> {{ injectedData.studentName }}</p>
+    </div>
+
+    <form [formGroup]="paymentForm" class="payment-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Number of Hours</mat-label>
+        <input matInput type="number" formControlName="hours" min="1" max="10">
+        <mat-error *ngIf="paymentForm.get('hours')?.hasError('required')">
+          Hours are required
+        </mat-error>
+        <mat-error *ngIf="paymentForm.get('hours')?.hasError('min')">
+          Minimum 1 hour
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Total Amount</mat-label>
+        <input matInput readonly [value]="'$' + totalAmount">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Payment Method</mat-label>
+        <mat-select formControlName="paymentMethod">
+          <mat-option value="credit_card">Credit Card</mat-option>
+          <mat-option value="debit_card">Debit Card</mat-option>
+          <mat-option value="paypal">PayPal</mat-option>
+          <mat-option value="bank_transfer">Bank Transfer</mat-option>
+        </mat-select>
+        <mat-error *ngIf="paymentForm.get('paymentMethod')?.hasError('required')">
+          Payment method is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width" *ngIf="paymentForm.get('paymentMethod')?.value === 'credit_card' || paymentForm.get('paymentMethod')?.value === 'debit_card'">
+        <mat-label>Card Number</mat-label>
+        <input matInput formControlName="cardNumber" placeholder="1234 5678 9012 3456">
+        <mat-error *ngIf="paymentForm.get('cardNumber')?.hasError('required')">
+          Card number is required
+        </mat-error>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onConfirm()" [disabled]="!paymentForm.valid">
+      Pay ${{ totalAmount }}
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -1,0 +1,659 @@
+.tutor-dashboard {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.dashboard-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.toolbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toolbar-icon {
+  font-size: 24px;
+}
+
+.toolbar-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.toolbar-center {
+  flex: 1;
+  text-align: center;
+}
+
+.welcome-text {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: white;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dashboard-content {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+// Stats Grid
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.stat-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  
+  &.students {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+  }
+  
+  &.sessions {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+  }
+  
+  &.earnings {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+  }
+  
+  &.rating {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    color: white;
+  }
+}
+
+.stat-number {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.stat-label {
+  margin: 0;
+  color: #666;
+  font-weight: 500;
+}
+
+// Dashboard Grid
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.dashboard-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  }
+}
+
+.card-icon {
+  margin-right: 0.5rem;
+  color: #667eea;
+}
+
+// Session List
+.session-list {
+  padding: 0;
+}
+
+.session-item {
+  border-bottom: 1px solid #eee;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.session-title {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.session-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.student-name {
+  font-weight: 500;
+}
+
+.start-btn {
+  min-width: 120px;
+}
+
+// Students List
+.students-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.student-item {
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fafafa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.student-info {
+  flex: 1;
+}
+
+.student-name {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-weight: 600;
+}
+
+.student-subject {
+  margin: 0 0 1rem 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.student-progress {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.progress-text {
+  font-weight: 500;
+  color: #667eea;
+  min-width: 40px;
+}
+
+.student-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.student-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.star {
+  color: #ffc107;
+  font-size: 16px;
+}
+
+.view-profile-btn {
+  margin-left: 1rem;
+}
+
+// Earnings Card
+.earnings-card {
+  grid-column: span 2;
+}
+
+.earnings-table {
+  width: 100%;
+}
+
+// Quick Actions
+.quick-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding: 1rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .earnings-card {
+    grid-column: span 1;
+  }
+
+  .quick-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .toolbar-content {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0 0.5rem;
+  }
+
+  .toolbar-center {
+    text-align: left;
+  }
+
+  .toolbar-title {
+    font-size: 1.2rem;
+  }
+
+  .welcome-text {
+    font-size: 1rem;
+  }
+
+  .toolbar-icon {
+    font-size: 20px;
+  }
+
+  .session-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .start-btn {
+    width: 100%;
+  }
+
+  .student-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .view-profile-btn {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .stat-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-content {
+    padding: 0.5rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .toolbar-content {
+    padding: 0 0.25rem;
+    gap: 0.5rem;
+  }
+
+  .toolbar-title {
+    font-size: 1rem;
+  }
+
+  .welcome-text {
+    font-size: 0.9rem;
+  }
+
+  .toolbar-icon {
+    font-size: 18px;
+  }
+
+  .toolbar-left {
+    gap: 0.25rem;
+  }
+
+  .toolbar-right {
+    gap: 0.25rem;
+  }
+
+  .toolbar-center {
+    display: none;
+  }
+
+  .welcome-text {
+    display: none;
+  }
+
+  .stat-card {
+    padding: 1rem;
+  }
+
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .stat-number {
+    font-size: 1.3rem;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+  }
+
+  .dashboard-card {
+    padding: 1rem;
+  }
+
+  .session-item {
+    padding: 0.75rem;
+  }
+
+  .session-title {
+    font-size: 1rem;
+  }
+
+  .session-details {
+    font-size: 0.85rem;
+  }
+
+  .student-item {
+    padding: 0.75rem;
+  }
+
+  .student-name {
+    font-size: 1rem;
+  }
+
+  .student-subject {
+    font-size: 0.85rem;
+  }
+
+  .student-progress {
+    gap: 0.5rem;
+  }
+
+  .progress-text {
+    font-size: 0.9rem;
+    min-width: 35px;
+  }
+
+  .student-meta {
+    font-size: 0.8rem;
+  }
+
+  .star {
+    font-size: 14px;
+  }
+
+  .action-btn {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .start-btn {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .view-profile-btn {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+}
+
+// Additional mobile optimizations
+@media (max-width: 320px) {
+  .stats-grid {
+    gap: 0.5rem;
+  }
+
+  .dashboard-grid {
+    gap: 0.5rem;
+  }
+
+  .stat-card {
+    padding: 0.75rem;
+  }
+
+  .stat-icon {
+    width: 45px;
+    height: 45px;
+  }
+
+  .stat-number {
+    font-size: 1.2rem;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+  }
+
+  .dashboard-card {
+    padding: 0.75rem;
+  }
+
+  .session-item {
+    padding: 0.5rem;
+  }
+
+  .student-item {
+    padding: 0.5rem;
+  }
+
+  .action-btn {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
+}
+
+// Touch-friendly improvements
+@media (hover: none) and (pointer: coarse) {
+  .stat-card:hover {
+    transform: none;
+  }
+
+  .dashboard-card:hover {
+    transform: none;
+  }
+
+  .action-btn:hover {
+    transform: none;
+  }
+
+  .session-item:hover {
+    transform: none;
+  }
+
+  .student-item:hover {
+    transform: none;
+  }
+
+  // Add active states for touch devices
+  .stat-card:active {
+    transform: scale(0.98);
+  }
+
+  .dashboard-card:active {
+    transform: scale(0.98);
+  }
+
+  .action-btn:active {
+    transform: scale(0.98);
+  }
+
+  .session-item:active {
+    transform: scale(0.98);
+  }
+
+  .student-item:active {
+    transform: scale(0.98);
+  }
+}
+
+// Landscape mobile optimizations
+@media (max-width: 768px) and (orientation: landscape) {
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .toolbar-content {
+    flex-direction: row;
+  }
+
+  .toolbar-center {
+    display: block;
+    text-align: center;
+  }
+
+  .welcome-text {
+    display: block;
+  }
+}
+
+// High DPI displays
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .toolbar-icon,
+  .stat-icon mat-icon {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+// Dark mode support (if needed)
+@media (prefers-color-scheme: dark) {
+  .dashboard-card {
+    background: #2c2c2c;
+    color: #ffffff;
+  }
+
+  .session-item {
+    border-bottom-color: #444;
+  }
+
+  .student-item {
+    background: #2c2c2c;
+    border-color: #444;
+  }
+
+  .session-title,
+  .student-name {
+    color: #ffffff;
+  }
+
+  .session-details,
+  .student-subject,
+  .student-meta {
+    color: #cccccc;
+  }
+}
+
+// Print styles
+@media print {
+  .tutor-dashboard {
+    background: white;
+  }
+
+  .toolbar-right {
+    display: none;
+  }
+
+  .action-btn {
+    display: none;
+  }
+
+  .start-btn {
+    display: none;
+  }
+
+  .view-profile-btn {
+    display: none;
+  }
+}

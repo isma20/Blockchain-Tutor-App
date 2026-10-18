@@ -1,0 +1,279 @@
+<div class="admin-dashboard">
+  <!-- Top Navigation -->
+  <mat-toolbar class="dashboard-toolbar" color="primary">
+    <div class="toolbar-content">
+      <div class="toolbar-left">
+        <mat-icon class="toolbar-icon">admin_panel_settings</mat-icon>
+        <span class="toolbar-title">TutorApp Admin</span>
+      </div>
+      
+      <div class="toolbar-center">
+        <span class="welcome-text">Admin Panel - {{ user?.name }} 🔧</span>
+      </div>
+      
+      <div class="toolbar-right">
+        <button mat-icon-button (click)="generateReport()">
+          <mat-icon>assessment</mat-icon>
+        </button>
+        <button mat-icon-button (click)="exportData()">
+          <mat-icon>download</mat-icon>
+        </button>
+        <button mat-icon-button [matMenuTriggerFor]="userMenu">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <a mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </a>
+        </mat-menu>
+      </div>
+    </div>
+  </mat-toolbar>
+
+  <!-- Main Dashboard Content -->
+  <div class="dashboard-content">
+    <!-- System Stats -->
+    <div class="stats-grid">
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-icon users">
+              <mat-icon>people</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3 class="stat-number">{{ totalUsers.toLocaleString() }}</h3>
+              <p class="stat-label">Total Users</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-icon tutors">
+              <mat-icon>school</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3 class="stat-number">{{ totalTutors }}</h3>
+              <p class="stat-label">Total Tutors</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-icon revenue">
+              <mat-icon>attach_money</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3 class="stat-number">${{ totalRevenue.toLocaleString() }}</h3>
+              <p class="stat-label">Total Revenue</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-icon sessions">
+              <mat-icon>video_call</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3 class="stat-number">{{ activeSessions }}</h3>
+              <p class="stat-label">Active Sessions</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="dashboard-grid">
+      <!-- Recent Activity -->
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon class="card-icon">activity</mat-icon>
+            Recent Activity
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-list class="activity-list">
+            <mat-list-item *ngFor="let activity of recentActivity" class="activity-item">
+              <div matListItemTitle class="activity-title">
+                <mat-icon class="activity-icon">{{ activity.icon }}</mat-icon>
+                {{ activity.user }} ({{ activity.role }})
+              </div>
+              <div matListItemLine class="activity-details">
+                <span class="activity-type">{{ activity.type.replace('_', ' ') }}</span>
+                <span class="activity-time">{{ activity.time }}</span>
+              </div>
+            </mat-list-item>
+          </mat-list>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Pending Tutor Approvals -->
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon class="card-icon">pending_actions</mat-icon>
+            Pending Tutor Approvals
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="pending-list">
+            <div *ngFor="let tutor of pendingTutors" class="pending-item">
+              <div class="tutor-info">
+                <h4 class="tutor-name">{{ tutor.name }}</h4>
+                <p class="tutor-specialty">{{ tutor.specialty }}</p>
+                <p class="tutor-experience">Experience: {{ tutor.experience }}</p>
+                <p class="tutor-applied">Applied: {{ tutor.appliedDate }}</p>
+                <div class="tutor-documents">
+                  <mat-chip *ngFor="let doc of tutor.documents" class="document-chip">
+                    {{ doc }}
+                  </mat-chip>
+                </div>
+              </div>
+              <div class="tutor-actions">
+                <button mat-raised-button 
+                        color="primary" 
+                        (click)="approveTutor(tutor)"
+                        class="approve-btn">
+                  <mat-icon>check</mat-icon>
+                  Approve
+                </button>
+                <button mat-stroked-button 
+                        color="warn" 
+                        (click)="rejectTutor(tutor)"
+                        class="reject-btn">
+                  <mat-icon>close</mat-icon>
+                  Reject
+                </button>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- System Analytics -->
+      <mat-card class="dashboard-card analytics-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon class="card-icon">analytics</mat-icon>
+            System Analytics
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="analytics-grid">
+            <div *ngFor="let metric of analyticsData" class="metric-item">
+              <div class="metric-info">
+                <h4 class="metric-name">{{ metric.metric }}</h4>
+                <p class="metric-value">{{ metric.value }}</p>
+                <span class="metric-change" [class.positive]="metric.change.startsWith('+')">
+                  {{ metric.change }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- User Management -->
+      <mat-card class="dashboard-card users-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon class="card-icon">manage_accounts</mat-icon>
+            User Management
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <table mat-table [dataSource]="usersData" class="users-table">
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Name</th>
+              <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="email">
+              <th mat-header-cell *matHeaderCellDef>Email</th>
+              <td mat-cell *matCellDef="let row">{{ row.email }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="role">
+              <th mat-header-cell *matHeaderCellDef>Role</th>
+              <td mat-cell *matCellDef="let row">
+                <mat-chip [color]="row.role === 'Tutor' ? 'primary' : 'accent'">
+                  {{ row.role }}
+                </mat-chip>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Status</th>
+              <td mat-cell *matCellDef="let row">
+                <mat-chip [color]="row.status === 'Active' ? 'primary' : 'warn'">
+                  {{ row.status }}
+                </mat-chip>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="joinDate">
+              <th mat-header-cell *matHeaderCellDef>Join Date</th>
+              <td mat-cell *matCellDef="let row">{{ row.joinDate }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let row">
+                <button mat-icon-button (click)="viewUserDetails(row)">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="suspendUser(row)">
+                  <mat-icon>block</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Quick Actions -->
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon class="card-icon">bolt</mat-icon>
+            Admin Actions
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="quick-actions">
+            <button mat-raised-button color="primary" class="action-btn">
+              <mat-icon>person_add</mat-icon>
+              Add User
+            </button>
+            <button mat-stroked-button color="primary" class="action-btn">
+              <mat-icon>settings</mat-icon>
+              System Settings
+            </button>
+            <button mat-stroked-button color="primary" class="action-btn">
+              <mat-icon>security</mat-icon>
+              Security Logs
+            </button>
+            <button mat-stroked-button color="primary" class="action-btn">
+              <mat-icon>backup</mat-icon>
+              Backup Data
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

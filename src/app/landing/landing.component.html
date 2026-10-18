@@ -1,0 +1,387 @@
+<div class="landing-container">
+  <!-- Fixed Top Navbar -->
+  <nav class="navbar" [class.scrolled]="isScrolled">
+    <div class="navbar-content">
+      <div class="logo" (click)="scrollToSection('hero')">
+        <mat-icon>school</mat-icon>
+        <span class="logo-text">TutorApp</span>
+      </div>
+      
+      <div class="nav-links hide-mobile">
+        <a (click)="scrollToSection('how-it-works')">How It Works</a>
+        <a (click)="scrollToSection('features')">Features</a>
+        <a (click)="scrollToSection('tutors')">Tutors</a>
+        <a (click)="scrollToSection('contact')">Contact</a>
+      </div>
+
+      <div class="nav-actions">
+        <button mat-button (click)="navigateToLogin()" class="nav-btn">Sign In</button>
+        <button mat-raised-button color="primary" (click)="navigateToRegister()" class="nav-btn-primary">Sign Up</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="hero" class="hero-section">
+    <div class="hero-content animate-fade-in">
+      <div class="hero-text">
+        <h1 class="hero-title">
+          <span class="title-line animate-slide-up">TutorApp –</span>
+          <span class="title-line animate-slide-up animate-delay-1">Learn from Expert Tutors</span>
+        </h1>
+        <p class="hero-subtitle animate-slide-up animate-delay-2">
+          Personalized 1-on-1 sessions with verified tutors
+        </p>
+        <p class="hero-description animate-slide-up animate-delay-3">
+          Experience the future of education with blockchain-backed credentials and secure learning platform
+        </p>
+        <div class="hero-actions animate-slide-up animate-delay-4">
+          <button mat-raised-button color="primary" size="large" (click)="navigateToRegister()" class="cta-button">
+            <mat-icon>rocket_launch</mat-icon>
+            Get Started
+          </button>
+          <button mat-stroked-button color="primary" size="large" (click)="scrollToSection('how-it-works')" class="secondary-button">
+            <mat-icon>play_circle</mat-icon>
+            Learn More
+          </button>
+        </div>
+      </div>
+      
+      <div class="hero-visual animate-fade-in animate-delay-2">
+        <div class="floating-cards">
+          <div class="floating-card card-1">
+            <mat-icon>video_call</mat-icon>
+            <span>Live Sessions</span>
+          </div>
+          <div class="floating-card card-2">
+            <mat-icon>verified_user</mat-icon>
+            <span>Verified Tutors</span>
+          </div>
+          <div class="floating-card card-3">
+            <mat-icon>account_tree</mat-icon>
+            <span>Blockchain</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Background Animation -->
+    <div class="hero-background">
+      <div class="wave wave-1"></div>
+      <div class="wave wave-2"></div>
+      <div class="particles">
+        <div class="particle" *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" [style]="'--delay: ' + (i * 0.5) + 's'"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section id="how-it-works" class="section section-light">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-subtitle">Get started in 4 simple steps</p>
+      </div>
+      
+      <div class="steps-grid">
+        <div class="step-card animate-on-scroll" *ngFor="let step of howItWorksSteps; let i = index">
+          <div class="step-number">{{ i + 1 }}</div>
+          <div class="step-icon">
+            <mat-icon>{{ step.icon }}</mat-icon>
+          </div>
+          <h3>{{ step.title }}</h3>
+          <p>{{ step.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="section section-dark">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <h2 class="section-title">What We Offer</h2>
+        <p class="section-subtitle">Powerful features for effective learning</p>
+      </div>
+      
+      <div class="features-grid">
+        <mat-card class="feature-card animate-on-scroll" *ngFor="let feature of features; let i = index">
+          <mat-card-content>
+            <div class="feature-icon">
+              <mat-icon>{{ feature.icon }}</mat-icon>
+            </div>
+            <h3>{{ feature.title }}</h3>
+            <p>{{ feature.description }}</p>
+            <div class="feature-tags">
+              <span class="tag" *ngFor="let tag of feature.tags">{{ tag }}</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- Instructions Panel -->
+  <section id="instructions" class="section section-light">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <h2 class="section-title">Getting Started Guide</h2>
+        <p class="section-subtitle">Everything you need to know to begin your learning journey</p>
+      </div>
+      
+      <mat-accordion class="instructions-accordion animate-on-scroll">
+        <mat-expansion-panel *ngFor="let instruction of instructions; let i = index" [expanded]="i === 0">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <div class="instruction-header">
+                <span class="instruction-number">{{ i + 1 }}</span>
+                {{ instruction.title }}
+              </div>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          
+          <div class="instruction-content">
+            <p>{{ instruction.content }}</p>
+            <div class="instruction-steps" *ngIf="instruction.steps">
+              <ol>
+                <li *ngFor="let step of instruction.steps">{{ step }}</li>
+              </ol>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </section>
+
+  <!-- Tutor Details Panel -->
+  <section id="tutors" class="section section-dark">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <h2 class="section-title">Meet Our Expert Tutors</h2>
+        <p class="section-subtitle">Learn from the best in their fields</p>
+      </div>
+      
+      <div class="tutors-grid">
+        <mat-card class="tutor-card animate-on-scroll" *ngFor="let tutor of tutors; let i = index">
+          <mat-card-content>
+            <div class="tutor-avatar">
+              <img [src]="tutor.avatar" [alt]="tutor.name">
+              <div class="tutor-status online"></div>
+            </div>
+            <div class="tutor-info">
+              <h3>{{ tutor.name }}</h3>
+              <p class="tutor-specialty">{{ tutor.specialty }}</p>
+              <div class="tutor-rating">
+                <mat-icon class="star">star</mat-icon>
+                <span>{{ tutor.rating }}</span>
+                <span class="rating-count">({{ tutor.reviews }} reviews)</span>
+              </div>
+              <div class="tutor-stats">
+                <span class="stat">
+                  <mat-icon>people</mat-icon>
+                  {{ tutor.students }} students
+                </span>
+                <span class="stat">
+                  <mat-icon>event</mat-icon>
+                  {{ tutor.sessions }} sessions
+                </span>
+              </div>
+              <div class="tutor-tags">
+                <span class="tag" *ngFor="let tag of tutor.tags">{{ tag }}</span>
+              </div>
+              <button mat-raised-button color="primary" class="view-profile-btn">
+                View Profile
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- Student Details Panel -->
+  <section id="students" class="section section-light">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <h2 class="section-title">Student Success Stories</h2>
+        <p class="section-subtitle">Hear from our happy learners</p>
+      </div>
+      
+      <div class="testimonials-grid">
+        <mat-card class="testimonial-card animate-on-scroll" *ngFor="let testimonial of testimonials; let i = index">
+          <mat-card-content>
+            <div class="testimonial-content">
+              <mat-icon class="quote-icon">format_quote</mat-icon>
+              <p>{{ testimonial.content }}</p>
+            </div>
+            <div class="testimonial-author">
+              <img [src]="testimonial.avatar" [alt]="testimonial.name">
+              <div class="author-info">
+                <h4>{{ testimonial.name }}</h4>
+                <p>{{ testimonial.course }}</p>
+              </div>
+            </div>
+            <div class="testimonial-rating">
+              <mat-icon class="star" *ngFor="let star of [1,2,3,4,5]">star</mat-icon>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why TutorApp is Special -->
+  <section id="special" class="section section-dark">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <h2 class="section-title">Why TutorApp is Special</h2>
+        <p class="section-subtitle">Unique features that set us apart</p>
+      </div>
+      
+      <div class="special-grid">
+        <div class="special-item animate-on-scroll" *ngFor="let item of specialFeatures; let i = index">
+          <div class="special-icon">
+            <mat-icon>{{ item.icon }}</mat-icon>
+          </div>
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.description }}</p>
+          <div class="special-highlight">
+            <span class="highlight-text">{{ item.highlight }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Admin Panel -->
+  <section id="contact" class="section section-light">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <h2 class="section-title">Get in Touch</h2>
+        <p class="section-subtitle">We're here to help you succeed</p>
+      </div>
+      
+      <div class="contact-content">
+        <div class="contact-form animate-on-scroll">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Send us a Message</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <form [formGroup]="contactForm" (ngSubmit)="onSubmitContact()">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Name</mat-label>
+                  <input matInput formControlName="name" required>
+                </mat-form-field>
+                
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Email</mat-label>
+                  <input matInput formControlName="email" type="email" required>
+                </mat-form-field>
+                
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Message</mat-label>
+                  <textarea matInput formControlName="message" rows="4" required></textarea>
+                </mat-form-field>
+                
+                <button mat-raised-button color="primary" type="submit" class="full-width">
+                  <mat-icon>send</mat-icon>
+                  Send Message
+                </button>
+              </form>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        
+        <div class="contact-info animate-on-scroll">
+          <mat-card>
+            <mat-card-content>
+              <h3>Contact Information</h3>
+              <div class="contact-item">
+                <mat-icon>email</mat-icon>
+                <span>tutor_app@gmail.com</span>
+              </div>
+              <div class="contact-item">
+                <mat-icon>phone</mat-icon>
+                <span>+088 01836903477</span>
+              </div>
+              <div class="contact-item">
+                <mat-icon>location_on</mat-icon>
+                <span>Chittagong,Bangladesh</span>
+              </div>
+              
+              <div class="social-links">
+                <h4>Follow Us</h4>
+                <div class="social-icons">
+                  <a href="#" class="social-icon">
+                    <mat-icon>facebook</mat-icon>
+                  </a>
+                  <a href="#" class="social-icon">
+                    <mat-icon>twitter</mat-icon>
+                  </a>
+                  <a href="#" class="social-icon">
+                    <mat-icon>linkedin</mat-icon>
+                  </a>
+                  <a href="#" class="social-icon">
+                    <mat-icon>instagram</mat-icon>
+                  </a>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <div class="footer-logo">
+            <mat-icon>school</mat-icon>
+            <span>TutorApp</span>
+          </div>
+          <p>Your trusted platform for quality education and personalized learning experiences.</p>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a (click)="scrollToSection('how-it-works')">How It Works</a></li>
+            <li><a (click)="scrollToSection('features')">Features</a></li>
+            <li><a (click)="scrollToSection('tutors')">Find Tutors</a></li>
+            <li><a (click)="scrollToSection('contact')">Contact</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Resources</h4>
+          <ul>
+            <li><a routerLink="/login">Student Portal</a></li>
+            <li><a routerLink="/login">Tutor Portal</a></li>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Blog</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+            <li><a href="#">Refund Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2024 TutorApp. All rights reserved. Made with ❤️ for learners everywhere.</p>
+      </div>
+    </div>
+  </footer>
+</div>

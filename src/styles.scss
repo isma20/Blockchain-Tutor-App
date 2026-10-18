@@ -1,0 +1,48 @@
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+html, body { 
+  height: 100%; 
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif; 
+  background: linear-gradient(135deg, #eef7ff 0%, #cfe9ff 45%, #9fd2ff 100%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+// Custom theme colors
+:root {
+  --primary: #3b82f6;
+  --accent: #38bdf8;
+  --dark-primary: #1d4ed8;
+  --light-accent: #93c5fd;
+}
+
+// Material theme overrides
+.mat-mdc-raised-button.mat-primary,
+.mat-mdc-unelevated-button.mat-primary,
+.mat-mdc-fab.mat-primary,
+.mat-mdc-mini-fab.mat-primary {
+  background-color: var(--primary) !important;
+}
+
+.mat-mdc-raised-button.mat-accent,
+.mat-mdc-unelevated-button.mat-accent,
+.mat-mdc-fab.mat-accent,
+.mat-mdc-mini-fab.mat-accent {
+  background-color: var(--accent) !important;
+}
+
+// Responsive utilities
+@media (max-width: 600px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+@media (min-width: 601px) {
+  .hide-desktop {
+    display: none !important;
+  }
+}

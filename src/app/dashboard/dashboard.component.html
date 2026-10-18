@@ -1,0 +1,134 @@
+<div class="dashboard-container">
+  <mat-toolbar color="primary" class="app-toolbar">
+    <span class="logo">
+      <mat-icon>school</mat-icon>
+      TutorConnect Pro
+    </span>
+    <span class="spacer"></span>
+    <button mat-button [matMenuTriggerFor]="userMenu">
+      <mat-icon>account_circle</mat-icon>
+      {{ user?.name || 'User' }}
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Logout
+      </button>
+    </mat-menu>
+  </mat-toolbar>
+
+  <div class="dashboard-content">
+    <div class="welcome-card">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+            Welcome back, {{ user?.name }}!
+          </mat-card-title>
+          <mat-card-subtitle>
+            <span class="role-badge" [class]="user?.role">
+              {{ user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1) }}
+            </span>
+            <span class="status-badge" [class.verified]="user?.verified">
+              {{ user?.verified ? 'Verified' : 'Pending' }}
+            </span>
+          </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p *ngIf="user?.role === 'student'">
+            Welcome to your student dashboard! Here you can find tutors, book sessions, and track your progress.
+          </p>
+          <p *ngIf="user?.role === 'tutor'">
+            Welcome to your tutor dashboard! Here you can manage your profile, view students, and track earnings.
+          </p>
+          <p *ngIf="user?.role === 'admin'">
+            Welcome to your admin dashboard! Here you can manage users, verify tutors, and view reports.
+          </p>
+          
+          <div class="action-buttons">
+            <!-- Student Actions -->
+            <ng-container *ngIf="user?.role === 'student'">
+              <button mat-raised-button color="primary">
+                <mat-icon>search</mat-icon>
+                Find Tutors
+              </button>
+              <button mat-raised-button color="accent">
+                <mat-icon>book</mat-icon>
+                My Courses
+              </button>
+              <button mat-raised-button color="warn">
+                <mat-icon>schedule</mat-icon>
+                Schedule Session
+              </button>
+            </ng-container>
+            
+            <!-- Tutor Actions -->
+            <ng-container *ngIf="user?.role === 'tutor'">
+              <button mat-raised-button color="primary">
+                <mat-icon>person</mat-icon>
+                My Profile
+              </button>
+              <button mat-raised-button color="accent">
+                <mat-icon>people</mat-icon>
+                My Students
+              </button>
+              <button mat-raised-button color="warn">
+                <mat-icon>payments</mat-icon>
+                Earnings
+              </button>
+            </ng-container>
+            
+            <!-- Admin Actions -->
+            <ng-container *ngIf="user?.role === 'admin'">
+              <button mat-raised-button color="primary">
+                <mat-icon>manage_accounts</mat-icon>
+                Manage Users
+              </button>
+              <button mat-raised-button color="accent">
+                <mat-icon>verified_user</mat-icon>
+                Verify Tutors
+              </button>
+              <button mat-raised-button color="warn">
+                <mat-icon>bar_chart</mat-icon>
+                Reports
+              </button>
+            </ng-container>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="stats-grid">
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <mat-icon class="stat-icon">event</mat-icon>
+          <h3>Total Sessions</h3>
+          <p class="stat-number">42</p>
+        </mat-card-content>
+      </mat-card>
+      
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <mat-icon class="stat-icon">star</mat-icon>
+          <h3>Rating</h3>
+          <p class="stat-number">4.8</p>
+        </mat-card-content>
+      </mat-card>
+      
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <mat-icon class="stat-icon">attach_money</mat-icon>
+          <h3>Earnings</h3>
+          <p class="stat-number">$1,250</p>
+        </mat-card-content>
+      </mat-card>
+      
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <mat-icon class="stat-icon">trending_up</mat-icon>
+          <h3>Progress</h3>
+          <p class="stat-number">78%</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

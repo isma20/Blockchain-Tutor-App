@@ -1,0 +1,409 @@
+<div class="tutor-profile-container">
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    <p>Loading tutor profile...</p>
+  </div>
+
+  <!-- Profile Content -->
+  <div *ngIf="!isLoading && tutorProfile" class="profile-content">
+    <!-- Header Section -->
+    <div class="profile-header">
+      <mat-card class="header-card">
+        <mat-card-header>
+          <div mat-card-avatar class="tutor-avatar">
+            <mat-icon>person</mat-icon>
+          </div>
+          <mat-card-title class="tutor-name">{{ tutorProfile.name }}</mat-card-title>
+          <mat-card-subtitle class="tutor-title">{{ tutorProfile.specialties.join(', ') || 'Tutor' }}</mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <div class="tutor-stats">
+            <div class="stat-item">
+              <span class="stat-value">{{ tutorProfile.rating || 4.5 }}/5</span>
+              <span class="stat-label">Rating</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">{{ tutorProfile.totalStudents || 0 }}</span>
+              <span class="stat-label">Students</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">{{ tutorProfile.totalSessions || 0 }}</span>
+              <span class="stat-label">Sessions</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">${{ tutorProfile.hourlyRate || 0 }}/hr</span>
+              <span class="stat-label">Hourly Rate</span>
+            </div>
+          </div>
+          
+          <p class="tutor-bio">{{ tutorProfile.bio || 'No bio available' }}</p>
+          
+          <div class="tutor-skills">
+            <mat-chip-listbox>
+              <mat-chip-option *ngFor="let skill of tutorProfile.skills" color="primary">
+                {{ skill }}
+              </mat-chip-option>
+            </mat-chip-listbox>
+          </div>
+        </mat-card-content>
+        
+        <mat-card-actions *ngIf="!isOwnProfile && currentUser?.role === 'student'">
+          <button mat-button>
+            <mat-icon>message</mat-icon>
+            Contact Tutor
+          </button>
+        </mat-card-actions>
+        
+        <mat-card-actions *ngIf="isOwnProfile">
+          <button mat-raised-button color="primary" (click)="editProfile()">
+            <mat-icon>edit</mat-icon>
+            Edit Profile
+          </button>
+          <button mat-raised-button color="accent" (click)="addCourse()">
+            <mat-icon>add</mat-icon>
+            Add Course
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+
+    <!-- Tabs Section -->
+    <div class="profile-tabs">
+      <mat-tab-group [(selectedIndex)]="selectedTab" dynamicHeight>
+        <!-- About Tab -->
+        <mat-tab label="About">
+          <div class="tab-content">
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>About {{ tutorProfile.name }}</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="about-section">
+                  <div class="info-group">
+                    <h4>Experience</h4>
+                    <p>{{ tutorProfile.experience || 'No experience information available' }}</p>
+                  </div>
+                  
+                  <div class="info-group">
+                    <h4>Education</h4>
+                    <p>{{ tutorProfile.education || 'No education information available' }}</p>
+                  </div>
+                  
+                  <div class="info-group">
+                    <h4>Specialties</h4>
+                    <mat-chip-listbox>
+                      <mat-chip-option *ngFor="let specialty of tutorProfile.specialties" color="accent">
+                        {{ specialty }}
+                      </mat-chip-option>
+                    </mat-chip-listbox>
+                  </div>
+                  
+                  <div class="info-group">
+                    <h4>Languages</h4>
+                    <mat-chip-listbox>
+                      <mat-chip-option *ngFor="let language of tutorProfile.languages" color="primary">
+                        {{ language }}
+                      </mat-chip-option>
+                    </mat-chip-listbox>
+                  </div>
+                  
+                  <div class="info-group">
+                    <h4>Availability</h4>
+                    <mat-chip-listbox>
+                      <mat-chip-option *ngFor="let slot of tutorProfile.availability" color="warn">
+                        {{ slot }}
+                      </mat-chip-option>
+                    </mat-chip-listbox>
+                  </div>
+                  
+                  <div class="info-group">
+                    <h4>Certifications</h4>
+                    <ul>
+                      <li *ngFor="let cert of tutorProfile.certifications">{{ cert }}</li>
+                    </ul>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </mat-tab>
+
+        <!-- Courses Tab -->
+        <mat-tab label="Courses">
+          <div class="tab-content">
+            <!-- Add Course Form (for own profile) -->
+            <mat-card *ngIf="isOwnProfile" class="add-course-card">
+              <mat-card-header>
+                <mat-card-title>Create New Course</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <form [formGroup]="courseForm" (ngSubmit)="createCourse()">
+                  <div class="form-row">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Course Title</mat-label>
+                      <input matInput formControlName="title" placeholder="Enter course title">
+                      <mat-error *ngIf="courseForm.get('title')?.hasError('required')">
+                        Course title is required
+                      </mat-error>
+                    </mat-form-field>
+                    
+                    <mat-form-field appearance="outline">
+                      <mat-label>Category</mat-label>
+                      <mat-select formControlName="category">
+                        <mat-option value="mathematics">Mathematics</mat-option>
+                        <mat-option value="science">Science</mat-option>
+                        <mat-option value="programming">Programming</mat-option>
+                        <mat-option value="languages">Languages</mat-option>
+                        <mat-option value="business">Business</mat-option>
+                        <mat-option value="arts">Arts</mat-option>
+                        <mat-option value="other">Other</mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="courseForm.get('category')?.hasError('required')">
+                        Category is required
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  
+                  <div class="form-row">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Price ($)</mat-label>
+                      <input matInput type="number" formControlName="price" placeholder="0">
+                      <mat-error *ngIf="courseForm.get('price')?.hasError('required')">
+                        Price is required
+                      </mat-error>
+                      <mat-error *ngIf="courseForm.get('price')?.hasError('min')">
+                        Price must be positive
+                      </mat-error>
+                    </mat-form-field>
+                    
+                    <mat-form-field appearance="outline">
+                      <mat-label>Duration</mat-label>
+                      <input matInput formControlName="duration" placeholder="e.g., 8 weeks">
+                      <mat-error *ngIf="courseForm.get('duration')?.hasError('required')">
+                        Duration is required
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  
+                  <div class="form-row">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Level</mat-label>
+                      <mat-select formControlName="level">
+                        <mat-option value="beginner">Beginner</mat-option>
+                        <mat-option value="intermediate">Intermediate</mat-option>
+                        <mat-option value="advanced">Advanced</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    
+                    <mat-form-field appearance="outline">
+                      <mat-label>Max Students</mat-label>
+                      <input matInput type="number" formControlName="maxStudents" placeholder="10">
+                      <mat-error *ngIf="courseForm.get('maxStudents')?.hasError('required')">
+                        Max students is required
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Description</mat-label>
+                    <textarea matInput formControlName="description" placeholder="Describe your course..." rows="4"></textarea>
+                    <mat-error *ngIf="courseForm.get('description')?.hasError('required')">
+                      Description is required
+                    </mat-error>
+                  </mat-form-field>
+                  
+                  <div class="form-actions">
+                    <button mat-raised-button color="primary" type="submit" [disabled]="!courseForm.valid">
+                      <mat-icon>add</mat-icon>
+                      Create Course
+                    </button>
+                    <button mat-button type="button" (click)="courseForm.reset()">
+                      Clear
+                    </button>
+                  </div>
+                </form>
+              </mat-card-content>
+            </mat-card>
+
+            <!-- Courses List -->
+            <div class="courses-list">
+              <mat-card *ngFor="let course of availableCourses" class="course-card">
+                <mat-card-header>
+                  <mat-card-title>{{ course.title }}</mat-card-title>
+                  <mat-card-subtitle>{{ course.category }} • {{ course.level }}</mat-card-subtitle>
+                </mat-card-header>
+                
+                <mat-card-content>
+                  <p>{{ course.description }}</p>
+                  
+                  <div class="course-details">
+                    <div class="detail-item">
+                      <mat-icon>schedule</mat-icon>
+                      <span>{{ course.duration }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <mat-icon>attach_money</mat-icon>
+                      <span>${{ course.price }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <mat-icon>people</mat-icon>
+                      <span>{{ course.enrolledStudents || 0 }}/{{ course.maxStudents }} students</span>
+                    </div>
+                  </div>
+                  
+                  <div class="course-progress" *ngIf="isEnrolledInCourse(course.id)">
+                    <span>Progress: {{ getCourseProgress(course.id) | number:'1.0-0' }}%</span>
+                    <mat-progress-bar mode="determinate" [value]="getCourseProgress(course.id)"></mat-progress-bar>
+                  </div>
+                </mat-card-content>
+                
+                <mat-card-actions>
+                  <button mat-raised-button 
+                          color="primary" 
+                          *ngIf="!isOwnProfile && currentUser?.role === 'student' && !isEnrolledInCourse(course.id)"
+                          (click)="enrollInCourse(course)"
+                          [disabled]="course.enrolledStudents >= course.maxStudents">
+                    <mat-icon>school</mat-icon>
+                    Enroll Now - ${{ course.price }}
+                  </button>
+                  
+                  <button mat-button 
+                          *ngIf="isEnrolledInCourse(course.id)"
+                          color="accent">
+                    <mat-icon>play_arrow</mat-icon>
+                    Continue Learning
+                  </button>
+                  
+                  <mat-chip-listbox *ngIf="isOwnProfile">
+                    <mat-chip-option [color]="getLevelColor(course.level)">
+                      {{ course.level }}
+                    </mat-chip-option>
+                  </mat-chip-listbox>
+                </mat-card-actions>
+              </mat-card>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Students Tab (for tutors only) -->
+        <mat-tab label="Students" *ngIf="isOwnProfile">
+          <div class="tab-content">
+            <div class="students-list">
+              <mat-card *ngFor="let student of tutorStudents" class="student-card">
+                <mat-card-header>
+                  <mat-card-title>{{ student.name }}</mat-card-title>
+                  <mat-card-subtitle>{{ student.email }}</mat-card-subtitle>
+                </mat-card-header>
+                
+                <mat-card-content>
+                  <div class="student-info">
+                    <div class="info-row">
+                      <span class="label">Enrolled Courses:</span>
+                      <span class="value">{{ student.enrolledCourses.join(', ') || 'None' }}</span>
+                    </div>
+                    <div class="info-row">
+                      <span class="label">Progress:</span>
+                      <span class="value">{{ student.progress || 0 }}%</span>
+                    </div>
+                    <div class="info-row">
+                      <span class="label">Last Active:</span>
+                      <span class="value">{{ student.lastActive | date:'short' }}</span>
+                    </div>
+                    <div class="info-row">
+                      <span class="label">Payment Status:</span>
+                      <mat-chip-listbox>
+                        <mat-chip-option [color]="getPaymentStatusColor(student.paymentStatus)">
+                          {{ student.paymentStatus }}
+                        </mat-chip-option>
+                      </mat-chip-listbox>
+                    </div>
+                  </div>
+                </mat-card-content>
+                
+                <mat-card-actions>
+                  <button mat-button color="primary">
+                    <mat-icon>message</mat-icon>
+                    Contact
+                  </button>
+                  <button mat-button color="accent">
+                    <mat-icon>assessment</mat-icon>
+                    View Progress
+                  </button>
+                </mat-card-actions>
+              </mat-card>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Edit Profile Tab (for own profile only) -->
+        <mat-tab label="Edit Profile" *ngIf="isOwnProfile">
+          <div class="tab-content">
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>Edit Profile</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <form [formGroup]="editProfileForm" (ngSubmit)="updateProfile()">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Bio</mat-label>
+                    <textarea matInput formControlName="bio" placeholder="Tell us about yourself..." rows="4"></textarea>
+                    <mat-error *ngIf="editProfileForm.get('bio')?.hasError('required')">
+                      Bio is required
+                    </mat-error>
+                  </mat-form-field>
+                  
+                  <div class="form-row">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Experience</mat-label>
+                      <textarea matInput formControlName="experience" placeholder="Your teaching experience..." rows="3"></textarea>
+                      <mat-error *ngIf="editProfileForm.get('experience')?.hasError('required')">
+                        Experience is required
+                      </mat-error>
+                    </mat-form-field>
+                    
+                    <mat-form-field appearance="outline">
+                      <mat-label>Education</mat-label>
+                      <textarea matInput formControlName="education" placeholder="Your educational background..." rows="3"></textarea>
+                      <mat-error *ngIf="editProfileForm.get('education')?.hasError('required')">
+                        Education is required
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  
+                  <div class="form-row">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Hourly Rate ($)</mat-label>
+                      <input matInput type="number" formControlName="hourlyRate" placeholder="0">
+                      <mat-error *ngIf="editProfileForm.get('hourlyRate')?.hasError('required')">
+                        Hourly rate is required
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                  
+                  <div class="form-actions">
+                    <button mat-raised-button color="primary" type="submit" [disabled]="!editProfileForm.valid">
+                      <mat-icon>save</mat-icon>
+                      Save Changes
+                    </button>
+                    <button mat-button type="button" (click)="editProfileForm.reset()">
+                      Reset
+                    </button>
+                  </div>
+                </form>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+
+  <!-- Back Button -->
+  <div class="back-button">
+    <button mat-fab color="primary" (click)="backToDashboard()" matTooltip="Back to Dashboard">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  </div>
+</div>

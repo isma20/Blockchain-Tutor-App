@@ -1,0 +1,291 @@
+.admin-login-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 450px;
+}
+
+.admin-login-card {
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.login-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-align: center;
+  padding: 24px;
+  
+  .login-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 1.5rem;
+    font-weight: 500;
+    
+    .admin-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+    }
+  }
+  
+  mat-card-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 8px;
+  }
+}
+
+.login-form {
+  padding: 24px;
+  
+  .error-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #ffebee;
+    color: #c62828;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    border-left: 4px solid #c62828;
+    
+    .error-icon {
+      color: #c62828;
+    }
+  }
+  
+  .full-width {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+  
+  .login-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    
+    .button-spinner {
+      margin: 0;
+    }
+    
+    .button-text {
+      margin-left: 8px;
+    }
+  }
+}
+
+.credentials-section {
+  padding: 0 24px 24px;
+  
+  .credentials-panel {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    
+    ::ng-deep .mat-expansion-panel-header {
+      background: #f5f5f5;
+      border-radius: 8px 8px 0 0;
+      
+      .mat-panel-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #666;
+        font-weight: 500;
+        
+        .credentials-icon {
+          color: #667eea;
+        }
+      }
+    }
+    
+    .credentials-content {
+      padding: 16px;
+      
+      .credential-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        padding: 8px;
+        background: #f9f9f9;
+        border-radius: 6px;
+        
+        strong {
+          min-width: 80px;
+          color: #333;
+        }
+        
+        code {
+          flex: 1;
+          background: #e8eaf6;
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-family: 'Courier New', monospace;
+          color: #283593;
+          word-break: break-all;
+        }
+        
+        button {
+          margin-left: 8px;
+        }
+      }
+      
+      .security-note {
+        margin-top: 16px;
+        background: #fff3e0;
+        border-left: 4px solid #ff9800;
+        
+        mat-card-content {
+          display: flex;
+          align-items: flex-start;
+          gap: 8px;
+          padding: 12px;
+          
+          .warning-icon {
+            color: #ff9800;
+            margin-top: 2px;
+          }
+          
+          p {
+            margin: 0;
+            color: #e65100;
+            font-size: 0.875rem;
+            line-height: 1.4;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Material Design Overrides
+::ng-deep .mat-mdc-card {
+  border-radius: 16px;
+}
+
+::ng-deep .mat-mdc-form-field {
+  .mat-mdc-text-field-wrapper {
+    border-radius: 8px;
+  }
+}
+
+::ng-deep .mat-mdc-raised-button {
+  border-radius: 8px;
+}
+
+::ng-deep .mat-mdc-icon-button {
+  border-radius: 50%;
+}
+
+::ng-deep .mat-mdc-expansion-panel {
+  border-radius: 8px !important;
+}
+
+// Responsive Design
+@media (max-width: 480px) {
+  .admin-login-container {
+    padding: 16px;
+  }
+  
+  .login-card {
+    max-width: 100%;
+  }
+  
+  .login-header {
+    padding: 20px;
+    
+    .login-title {
+      font-size: 1.3rem;
+      
+      .admin-icon {
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+      }
+    }
+  }
+  
+  .login-form {
+    padding: 20px;
+  }
+  
+  .credentials-section {
+    padding: 0 20px 20px;
+    
+    .credential-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      
+      strong {
+        min-width: auto;
+      }
+      
+      code {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.admin-login-card,
+.credentials-panel {
+  animation: fadeIn 0.6s ease-out;
+}
+
+// Copy to clipboard functionality
+.copy-feedback {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #4caf50;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 1000;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

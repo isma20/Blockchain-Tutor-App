@@ -1,0 +1,332 @@
+<div class="student-dashboard">
+  <!-- Top Navigation -->
+  <mat-toolbar class="dashboard-toolbar" color="primary">
+    <div class="toolbar-content">
+      <div class="toolbar-left">
+        <mat-icon class="toolbar-icon">school</mat-icon>
+        <span class="toolbar-title">TutorApp</span>
+      </div>
+      
+      <div class="toolbar-center">
+        <span class="welcome-text">Welcome back, {{ user?.name }}! 👋</span>
+      </div>
+      
+      <div class="toolbar-right">
+        <button mat-icon-button [matMenuTriggerFor]="userMenu">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <a mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </a>
+        </mat-menu>
+      </div>
+    </div>
+  </mat-toolbar>
+
+  <!-- Main Dashboard Content -->
+  <div class="dashboard-content">
+    <!-- Quick Stats -->
+    <div class="stats-row">
+      <mat-card class="stat-card">
+        <mat-card-content class="stat-content">
+          <div class="stat-icon">
+            <mat-icon>event_available</mat-icon>
+          </div>
+          <div class="stat-info">
+            <div class="stat-number">{{ upcomingSessions.length }}</div>
+            <div class="stat-label">Upcoming Sessions</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      
+      <mat-card class="stat-card">
+        <mat-card-content class="stat-content">
+          <div class="stat-icon">
+            <mat-icon>grade</mat-icon>
+          </div>
+          <div class="stat-info">
+            <div class="stat-number">{{ studentGrades.length }}</div>
+            <div class="stat-label">Grades Received</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      
+      <mat-card class="stat-card">
+        <mat-card-content class="stat-content">
+          <div class="stat-icon">
+            <mat-icon>psychology</mat-icon>
+          </div>
+          <div class="stat-info">
+            <div class="stat-number">{{ tutors.length }}</div>
+            <div class="stat-label">Available Tutors</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Tab Navigation -->
+    <mat-tab-group [(selectedIndex)]="selectedTab" dynamicHeight class="dashboard-tabs">
+      <!-- Dashboard Tab -->
+      <mat-tab label="Dashboard">
+        <div class="tab-content">
+          <!-- Upcoming Sessions -->
+          <mat-card class="section-card">
+            <mat-card-header>
+              <mat-card-title>Upcoming Sessions</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="sessions-list">
+                <div *ngFor="let session of upcomingSessions" class="session-item">
+                  <div class="session-info">
+                    <div class="session-header">
+                      <span class="session-tutor">{{ session.tutor }}</span>
+                      <span class="session-subject">{{ session.subject }}</span>
+                    </div>
+                    <div class="session-details">
+                      <span class="session-time">{{ session.time }}</span>
+                      <span class="session-duration">{{ session.duration }}</span>
+                      <mat-chip-listbox>
+                        <mat-chip-option [color]="session.type === 'video' ? 'primary' : 'accent'">
+                          {{ session.type }}
+                        </mat-chip-option>
+                      </mat-chip-listbox>
+                    </div>
+                  </div>
+                  <div class="session-actions">
+                    <button mat-raised-button color="primary" (click)="joinSession(session)">
+                      <mat-icon>video_call</mat-icon>
+                      Join Session
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Recent Activity -->
+          <mat-card class="section-card">
+            <mat-card-header>
+              <mat-card-title>Recent Activity</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <mat-list>
+                <mat-list-item *ngFor="let activity of recentActivity">
+                  <div matListItemTitle>
+                    <mat-icon>{{ activity.icon }}</mat-icon>
+                    <span>{{ activity.description }}</span>
+                  </div>
+                  <div matListItemLine>{{ activity.time }}</div>
+                </mat-list-item>
+              </mat-list>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+      <!-- Find Tutors Tab -->
+      <mat-tab label="Find Tutors">
+        <div class="tab-content">
+          <!-- Search and Filter -->
+          <mat-card class="search-card">
+            <mat-card-content>
+              <form [formGroup]="searchForm">
+                <div class="search-row">
+                  <mat-form-field appearance="outline" class="search-field">
+                    <mat-label>Search tutors...</mat-label>
+                    <input matInput formControlName="search" placeholder="Search by name, subject, or skills" (input)="searchTutors()">
+                    <mat-icon matSuffix>search</mat-icon>
+                  </mat-form-field>
+                </div>
+                
+                <div class="filter-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Specialty</mat-label>
+                    <mat-select formControlName="specialty" (selectionChange)="searchTutors()">
+                      <mat-option value="">All Specialties</mat-option>
+                      <mat-option *ngFor="let specialty of specialties" [value]="specialty">
+                        {{ specialty }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  
+                  <button mat-raised-button color="primary" (click)="clearFilters()">
+                    <mat-icon>clear</mat-icon>
+                    Clear Filters
+                  </button>
+                </div>
+              </form>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Tutors Grid -->
+          <div class="tutors-grid">
+            <!-- No tutors found message -->
+            <div *ngIf="filteredTutors.length === 0 && tutors.length > 0" class="no-results">
+              <mat-icon class="no-results-icon">search_off</mat-icon>
+              <h3>No tutors found</h3>
+              <p>Try adjusting your search criteria or clear filters to see all available tutors.</p>
+              <button mat-raised-button color="primary" (click)="clearFilters()">
+                <mat-icon>clear</mat-icon>
+                Clear Filters
+              </button>
+            </div>
+
+            <!-- Loading message -->
+            <div *ngIf="isLoading" class="loading-message">
+              <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+              <p>Loading tutors...</p>
+            </div>
+
+            <!-- Tutor cards -->
+            <ng-container *ngIf="!isLoading && filteredTutors.length > 0">
+              <mat-card *ngFor="let tutor of filteredTutors" class="tutor-card">
+                <mat-card-header>
+                  <div mat-card-avatar class="tutor-avatar">
+                    <mat-icon>person</mat-icon>
+                  </div>
+                  <mat-card-title class="tutor-name">{{ tutor.name }}</mat-card-title>
+                  <mat-card-subtitle class="tutor-specialties">
+                    {{ tutor.specialties.join(', ') || 'General Tutor' }}
+                  </mat-card-subtitle>
+                </mat-card-header>
+                
+                <mat-card-content>
+                  <!-- Rating and Stats -->
+                  <div class="tutor-stats">
+                    <div class="rating">
+                      <span class="rating-stars">⭐ {{ tutor.rating || 4.5 }}/5</span>
+                    </div>
+                    
+                    <div class="stats-row">
+                      <span class="stat">
+                        <mat-icon>people</mat-icon>
+                        {{ tutor.totalStudents || 0 }} students
+                      </span>
+                      <span class="stat">
+                        <mat-icon>schedule</mat-icon>
+                        {{ tutor.totalSessions || 0 }} sessions
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <!-- Bio -->
+                  <p class="tutor-bio">{{ tutor.bio || 'Experienced tutor passionate about helping students succeed.' }}</p>
+                  
+                  <!-- Specialties -->
+                  <div class="tutor-skills">
+                    <mat-chip-listbox>
+                      <mat-chip-option *ngFor="let specialty of tutor.specialties.slice(0, 3)" 
+                                       [color]="getSpecialtyColor(specialty)">
+                        {{ specialty }}
+                      </mat-chip-option>
+                      <mat-chip-option *ngIf="tutor.specialties.length > 3" color="primary">
+                        +{{ tutor.specialties.length - 3 }} more
+                      </mat-chip-option>
+                    </mat-chip-listbox>
+                  </div>
+                  
+                  <!-- Hourly Rate -->
+                  <div class="hourly-rate">
+                    <mat-icon>attach_money</mat-icon>
+                    <span class="rate">${{ tutor.hourlyRate || 0 }}/hour</span>
+                  </div>
+                </mat-card-content>
+                
+                <mat-card-actions align="end">
+                  <button mat-raised-button color="primary" (click)="viewTutorProfile(tutor.id)">
+                    <mat-icon>person</mat-icon>
+                    View Profile
+                  </button>
+                  <button mat-button (click)="contactTutor(tutor)">
+                    <mat-icon>message</mat-icon>
+                    Contact
+                  </button>
+                  <button mat-raised-button color="accent" (click)="bookTutor(tutor)">
+                    <mat-icon>payment</mat-icon>
+                    Book Session
+                  </button>
+                </mat-card-actions>
+              </mat-card>
+            </ng-container>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- My Grades Tab -->
+      <mat-tab label="My Grades">
+        <div class="tab-content">
+          <mat-card class="grades-card">
+            <mat-card-header>
+              <mat-card-title>My Academic Performance</mat-card-title>
+              <mat-card-subtitle>Track your grades and progress</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <div *ngIf="studentGrades.length === 0" class="no-grades">
+                <mat-icon>school</mat-icon>
+                <h3>No grades yet</h3>
+                <p>Your grades will appear here once your tutors submit them.</p>
+              </div>
+              
+              <table mat-table [dataSource]="studentGrades" class="grades-table" *ngIf="studentGrades.length > 0">
+                <!-- Subject Column -->
+                <ng-container matColumnDef="subject">
+                  <th mat-header-cell *matHeaderCellDef>Subject</th>
+                  <td mat-cell *matCellDef="let grade">{{ grade.subject }}</td>
+                </ng-container>
+
+                <!-- Grade Column -->
+                <ng-container matColumnDef="grade">
+                  <th mat-header-cell *matHeaderCellDef>Grade</th>
+                  <td mat-cell *matCellDef="let grade">
+                    <div class="grade-display">
+                      <span class="grade-badge" [class.high]="getGradePercentage(grade) >= 80" 
+                                                  [class.medium]="getGradePercentage(grade) >= 60 && getGradePercentage(grade) < 80" 
+                                                  [class.low]="getGradePercentage(grade) < 60">
+                        {{ grade.grade }}/{{ grade.maxGrade }}
+                      </span>
+                      <span class="grade-percentage">{{ getGradePercentage(grade) }}%</span>
+                      <span class="grade-letter">{{ getGradeLetter(getGradePercentage(grade)) }}</span>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <!-- Assignment Column -->
+                <ng-container matColumnDef="assignment">
+                  <th mat-header-cell *matHeaderCellDef>Assignment</th>
+                  <td mat-cell *matCellDef="let grade">{{ grade.assignment }}</td>
+                </ng-container>
+
+                <!-- Tutor Column -->
+                <ng-container matColumnDef="tutor">
+                  <th mat-header-cell *matHeaderCellDef>Tutor</th>
+                  <td mat-cell *matCellDef="let grade">{{ grade.tutorId }}</td>
+                </ng-container>
+
+                <!-- Graded At Column -->
+                <ng-container matColumnDef="gradedAt">
+                  <th mat-header-cell *matHeaderCellDef>Date</th>
+                  <td mat-cell *matCellDef="let grade">
+                    {{ grade.gradedAt?.toDate() | date:'short' }}<span *ngIf="!grade.gradedAt">N/A</span>
+                  </td>
+                </ng-container>
+
+                <!-- Feedback Column -->
+                <ng-container matColumnDef="feedback">
+                  <th mat-header-cell *matHeaderCellDef>Feedback</th>
+                  <td mat-cell *matCellDef="let grade">
+                    <div class="feedback-text">{{ grade.feedback || 'No feedback provided' }}</div>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="gradeColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: gradeColumns;"></tr>
+              </table>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

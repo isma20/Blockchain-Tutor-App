@@ -1,0 +1,167 @@
+<div class="find-tutors-container">
+  <!-- Header -->
+  <div class="page-header">
+    <mat-card class="header-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>search</mat-icon>
+          Find Tutors
+        </mat-card-title>
+        <mat-card-subtitle>Discover expert tutors for your learning journey</mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <!-- Search and Filter Form -->
+        <form [formGroup]="searchForm" class="search-form">
+          <div class="search-row">
+            <mat-form-field appearance="outline" class="search-field">
+              <mat-label>Search tutors...</mat-label>
+              <input matInput formControlName="search" placeholder="Search by name, subject, or skills">
+              <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+          </div>
+          
+          <div class="filter-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Specialty</mat-label>
+              <mat-select formControlName="specialty">
+                <mat-option value="">All Specialties</mat-option>
+                <mat-option *ngFor="let specialty of specialties" [value]="specialty">
+                  {{ specialty }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Price Range</mat-label>
+              <mat-select formControlName="priceRange">
+                <mat-option value="">Any Price</mat-option>
+                <mat-option *ngFor="let range of priceRanges" [value]="range.label">
+                  {{ range.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Availability</mat-label>
+              <mat-select formControlName="availability">
+                <mat-option value="">Any Time</mat-option>
+                <mat-option value="Weekday Mornings">Weekday Mornings</mat-option>
+                <mat-option value="Weekday Evenings">Weekday Evenings</mat-option>
+                <mat-option value="Weekends">Weekends</mat-option>
+                <mat-option value="Flexible">Flexible</mat-option>
+              </mat-select>
+            </mat-form-field>
+            
+            <button mat-raised-button color="primary" (click)="clearFilters()" class="clear-btn">
+              <mat-icon>clear</mat-icon>
+              Clear Filters
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    <p>Finding tutors for you...</p>
+  </div>
+
+  <!-- Tutors Grid -->
+  <div *ngIf="!isLoading" class="tutors-content">
+    <div class="results-header">
+      <h3>{{ filteredTutors.length }} Tutors Found</h3>
+    </div>
+    
+    <div class="tutors-grid" *ngIf="filteredTutors.length > 0">
+      <mat-card *ngFor="let tutor of filteredTutors" class="tutor-card">
+        <mat-card-header>
+          <div mat-card-avatar class="tutor-avatar">
+            <mat-icon>person</mat-icon>
+          </div>
+          <mat-card-title class="tutor-name">{{ tutor.name }}</mat-card-title>
+          <mat-card-subtitle class="tutor-specialties">
+            {{ tutor.specialties.join(', ') || 'General Tutor' }}
+          </mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <!-- Rating and Stats -->
+          <div class="tutor-stats">
+            <div class="rating">
+              <mat-icon *ngFor="let star of getRatingStars(tutor.rating)" 
+                       [color]="star === 1 ? 'accent' : star === 0.5 ? 'accent' : 'primary'"
+                       class="star-icon">
+                {{ star === 1 ? 'star' : star === 0.5 ? 'star_half' : 'star_border' }}
+              </mat-icon>
+              <span class="rating-text">{{ getAverageRating(tutor) }}</span>
+            </div>
+            
+            <div class="stats-row">
+              <span class="stat">
+                <mat-icon>people</mat-icon>
+                {{ tutor.totalStudents || 0 }} students
+              </span>
+              <span class="stat">
+                <mat-icon>schedule</mat-icon>
+                {{ tutor.totalSessions || 0 }} sessions
+              </span>
+            </div>
+          </div>
+          
+          <!-- Bio -->
+          <p class="tutor-bio">{{ tutor.bio || 'Experienced tutor passionate about helping students succeed.' }}</p>
+          
+          <!-- Specialties -->
+          <div class="tutor-skills">
+            <mat-chip-listbox>
+              <mat-chip-option *ngFor="let specialty of tutor.specialties.slice(0, 3)" 
+                               [color]="getSpecialtyColor(specialty)">
+                {{ specialty }}
+              </mat-chip-option>
+              <mat-chip-option *ngIf="tutor.specialties.length > 3" color="primary">
+                +{{ tutor.specialties.length - 3 }} more
+              </mat-chip-option>
+            </mat-chip-listbox>
+          </div>
+          
+          <!-- Hourly Rate -->
+          <div class="hourly-rate">
+            <mat-icon>attach_money</mat-icon>
+            <span class="rate">${{ tutor.hourlyRate || 0 }}/hour</span>
+          </div>
+        </mat-card-content>
+        
+        <mat-card-actions align="end">
+          <button mat-raised-button color="primary" (click)="viewTutorProfile(tutor.id)">
+            <mat-icon>person</mat-icon>
+            View Profile
+          </button>
+          <button mat-button (click)="contactTutor(tutor)">
+            <mat-icon>message</mat-icon>
+            Contact
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+    
+    <!-- No Results -->
+    <div *ngIf="filteredTutors.length === 0" class="no-results">
+      <mat-icon>search_off</mat-icon>
+      <h3>No tutors found</h3>
+      <p>Try adjusting your search criteria or filters</p>
+      <button mat-raised-button color="primary" (click)="clearFilters()">
+        Clear All Filters
+      </button>
+    </div>
+  </div>
+
+  <!-- Back Button -->
+  <div class="back-button">
+    <button mat-fab color="primary" (click)="backToDashboard()" matTooltip="Back to Dashboard">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  </div>
+</div>

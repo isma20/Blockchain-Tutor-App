@@ -1,0 +1,456 @@
+.profile-container {
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  
+  mat-progress-spinner {
+    margin-bottom: 1rem;
+  }
+  
+  p {
+    color: #666;
+    font-size: 1rem;
+  }
+}
+
+.profile-content {
+  position: relative;
+}
+
+/* Header Section */
+.profile-header {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.back-button {
+  margin-bottom: 1.5rem;
+  color: #667eea;
+  
+  mat-icon {
+    margin-right: 0.5rem;
+  }
+}
+
+.tutor-header-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.tutor-avatar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+  }
+}
+
+.tutor-basic-info {
+  flex: 1;
+}
+
+.tutor-basic-info h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 0.5rem 0;
+}
+
+.rating-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  
+  .stars {
+    font-size: 1.2rem;
+    color: #ffc107;
+  }
+  
+  .rating-text {
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .review-count {
+    color: #666;
+    font-size: 0.9rem;
+  }
+}
+
+.tutor-stats {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #666;
+    font-size: 0.95rem;
+    
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      color: #667eea;
+    }
+  }
+}
+
+.tutor-actions {
+  flex-shrink: 0;
+}
+
+.book-button {
+  font-size: 1.1rem;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  
+  mat-icon {
+    margin-right: 0.5rem;
+  }
+}
+
+/* Profile Grid */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 8rem; // Space for sticky book section
+}
+
+.profile-section {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 1.5rem;
+  
+  mat-card-header {
+    padding: 1.5rem 1.5rem 0 1.5rem;
+    
+    mat-card-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #333;
+    }
+  }
+  
+  mat-card-content {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+  }
+}
+
+.bio-text {
+  line-height: 1.6;
+  color: #555;
+  font-size: 1rem;
+}
+
+/* Chips */
+mat-chip-listbox {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+mat-chip-option {
+  font-size: 0.9rem;
+}
+
+/* Languages */
+.languages-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.language-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #555;
+  
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #667eea;
+  }
+}
+
+/* Info Sections */
+.info-section {
+  margin-bottom: 1.5rem;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  h4 {
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+  }
+  
+  p {
+    color: #555;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+mat-divider {
+  margin: 1.5rem 0;
+}
+
+/* Availability */
+.availability-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.availability-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #555;
+  
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #28a745;
+  }
+}
+
+/* Certifications */
+.certifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.certification-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #555;
+  
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #007bff;
+  }
+}
+
+/* Reviews */
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.review-item {
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.reviewer-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.review-rating {
+  color: #ffc107;
+  font-size: 0.9rem;
+}
+
+.review-date {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.review-comment {
+  color: #555;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Sticky Book Section */
+.sticky-book-section {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e0e0e0;
+  padding: 1rem 2rem;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.book-card {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.book-info {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.price-info {
+  display: flex;
+  flex-direction: column;
+  
+  .price-label {
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .price-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #28a745;
+  }
+}
+
+.rating-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  span:first-child {
+    color: #ffc107;
+  }
+  
+  span:last-child {
+    font-weight: 600;
+    color: #333;
+  }
+}
+
+.book-button-large {
+  font-size: 1.1rem;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  
+  mat-icon {
+    margin-right: 0.5rem;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 1rem;
+  }
+  
+  .profile-header {
+    padding: 1.5rem;
+  }
+  
+  .tutor-header-info {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  
+  .tutor-basic-info h1 {
+    font-size: 2rem;
+  }
+  
+  .tutor-stats {
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .profile-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 6rem;
+  }
+  
+  .profile-section {
+    margin-bottom: 1rem;
+    
+    mat-card-header {
+      padding: 1rem 1rem 0 1rem;
+      
+      mat-card-title {
+        font-size: 1.1rem;
+      }
+    }
+    
+    mat-card-content {
+      padding: 0 1rem 1rem 1rem;
+    }
+  }
+  
+  .sticky-book-section {
+    padding: 1rem;
+  }
+  
+  .book-card {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .book-info {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .book-button-large {
+    width: 100%;
+  }
+}
